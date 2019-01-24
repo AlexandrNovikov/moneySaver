@@ -11,19 +11,20 @@
   "license": "ISC",
   "dependencies": {
     "assert": "^1.4.1",
+    "atob": "^2.1.2",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
-    "jsonwebtoken": "^8.4.0",
-    "nodemon": "^1.17.2",
-    "mongoose": "^5.3.13",
     "express-graphql": "^0.7.1",
     "express-jwt": "^5.3.1",
     "graphql": "^14.0.2",
-    "path": "^0.12.7",
+    "graphql-tools": "^4.0.3",
+    "jsonwebtoken": "^8.4.0",
     "merge-graphql-schemas": "^1.5.8",
-    "graphql-tools": "^4.0.3"
+    "mongoose": "^5.3.13",
+    "nodemon": "^1.18.9",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "babel-register": "^6.26.0",
