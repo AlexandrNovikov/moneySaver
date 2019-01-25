@@ -2,36 +2,40 @@ const authSrv = require('./authSrv');
 
 const categories = [
   {
-    'name': 'taxi',
+    'name': 'local_taxi',
     'description': 'Taxi',
   },
   {
-    'name': 'food-variant',
+    'name': 'restaurant',
     'description': 'Food',
   },
   {
-    'name': 'bus',
+    'name': 'train',
     'description': 'Transport'
   },
   {
-    'name': 'beach',
+    'name': 'flight',
     'description': 'Vacation'
   },
   {
-    'name': 'dumbbell',
+    'name': 'fitness_center',
     'description': 'Sport'
   },
   {
-    'name': 'hanger',
-    'description': 'Clothes'
+    'name': 'school',
+    'description': 'Education'
   },
   {
     'name': 'home',
     'description': 'Home'
   },
   {
-    'name': 'paw',
+    'name': 'pets',
     'description': 'Pets'
+  },
+  {
+    'name': 'local_pharmacy',
+    'description': 'Health'
   },
 ];
 

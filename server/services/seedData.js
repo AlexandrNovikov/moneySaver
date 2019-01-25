@@ -1,32 +1,19 @@
-const { MongoClient } = require('mongodb');
-const assert = require('assert');
-const { dbURL } = require('../config');
 const { addIds } = require('./defaultData');
+const Category = require('../models/Category');
 
 const seedData = {
 
   seedDefaultCategories(userId) {
     let categories = addIds(userId);
 
-    MongoClient.connect(dbURL, function(err, client) {
-      assert.equal(null, err);
-      console.log('Connected successfully to server');
-
-      const db = client.db('admin');
-      const collection = db.collection('categories');
-
-      collection.insertMany(categories, (err, result) => {
-        if (err) {
-          console.log(err)
-        } else {
-          console.log('Categories inserted!')
-        }
-
-      });
-      client.close()
+    Category.collection.insertMany(categories, {forceServerObjectId: true}, function (err) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log('Categories inserted!')
+      }
     });
   },
 };
-
 
 module.exports = seedData;

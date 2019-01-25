@@ -24,27 +24,11 @@
       </md-toolbar>
 
       <md-list>
-        <md-list-item>
-          <span class="md-list-item-text">Abbey Christansen</span>
+        <md-list-item v-for="category in categories">
+          <span class="md-list-item-text">{{category.description}}</span>
 
           <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-
-        <md-list-item>
-          <span class="md-list-item-text">Alex Nelson</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-
-        <md-list-item>
-          <span class="md-list-item-text">Mary Johnson</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon>chat_bubble</md-icon>
+            <md-icon class="md-primary">{{category.name}}</md-icon>
           </md-button>
         </md-list-item>
       </md-list>
@@ -53,29 +37,21 @@
 </template>
 
 <script>
-const axios = require('axios');
 
 export default {
   name: 'TheDrawer',
 
   data: () => ({
     sidePanelVisible: false,
-    categories: [],
   }),
-
-  // beforeUpdate() {
-  //   if(this.isAuthorized) {
-  //     const token = this.$cookie.get('auth');
-  //
-  //     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-  //     this.fetchCategories();
-  //   }
-  // },
 
   computed: {
     isAuthorized() {
       return this.$store.state.isAuthorized;
     },
+    categories() {
+      return this.$store.state.categories;
+    }
   },
   methods: {
     logout() {
