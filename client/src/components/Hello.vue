@@ -1,5 +1,6 @@
 <template>
   <section class="section">
+    <TheDrawer></TheDrawer>
     <div class="container">
       <AuthorizePage v-if="!isAuthorized"></AuthorizePage>
       <Profile v-if="isAuthorized"></Profile>
@@ -10,10 +11,11 @@
 <script>
 import AuthorizePage from './AuthorizePage';
 import Profile from './Profile';
+import TheDrawer from './TheDrawer';
 
 export default {
   name: 'Hello',
-  components: { Profile, AuthorizePage },
+  components: { TheDrawer, Profile, AuthorizePage },
   data() {
     return {
 

@@ -41,10 +41,12 @@ export default {
     };
   },
   created() {
+    const token = this.$cookie.get('auth');
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     this.fetchCurrentUser();
     this.fetchCategories();
-
   },
+
   methods: {
     fetchCurrentUser() {
       axios.post('/api', {
@@ -56,12 +58,11 @@ export default {
         });
     },
 
-    fetchCategories() { //TODO Move me to some service
+    fetchCategories() {
       axios.post('/api', {
         query: '{categories{id, name, description}}',
       })
         .then((res) => {
-          console.log(res);
           this.$store.commit('setCategories', res.data.data.categories);
         });
     },
