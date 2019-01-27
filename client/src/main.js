@@ -6,6 +6,7 @@ import VueMaterial from 'vue-material';
 import Vuetify from 'vuetify';
 import VueCookie from 'vue-cookie';
 import VueNoty from 'vuejs-noty';
+import axios  from 'axios';
 
 import 'vue-material/dist/vue-material.min.css';
 import 'vuetify/dist/vuetify.min.css';
@@ -43,6 +44,10 @@ const store = new Vuex.Store({
     }
   },
 });
+
+if(store.state.isAuthorized) {
+  axios.defaults.headers.common.Authorization = `Bearer ${store.state.isAuthorized}`;
+}
 
 /* eslint-disable no-new */
 new Vue({

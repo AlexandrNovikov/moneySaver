@@ -110,7 +110,6 @@ export default {
             this.$noty.error(res.data.errors[0].message);
           } else {
             this.$cookie.set('auth', res.data.data.login, 1);
-            axios.defaults.headers.common.Authorization = `Bearer ${res.data.data.login}`;
             this.$store.commit('login', res.data.data.login);
             this.sending = false;
           }

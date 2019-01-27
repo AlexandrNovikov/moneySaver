@@ -41,8 +41,6 @@ export default {
     };
   },
   created() {
-    const token = this.$cookie.get('auth');
-    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     this.fetchCurrentUser();
     this.fetchCategories();
 
