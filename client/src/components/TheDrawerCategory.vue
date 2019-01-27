@@ -9,7 +9,7 @@
       </div>
       <span class="md-title">Category</span>
       <div class="md-toolbar-section-end">
-        <md-button v-if="currentName" class="md-icon-button">
+        <md-button v-if="currentName" @click="deleteCategory" class="md-icon-button">
           <md-icon>delete</md-icon>
         </md-button>
         <md-button v-if="isEdited" type="submit" class="md-icon-button">
@@ -62,6 +62,11 @@ export default {
   mixins: [validationMixin],
 
   props: {
+    id: {
+      type: String,
+      required: false,
+      default: '',
+    },
     currentName: {
       type: String,
       required: false,
@@ -132,7 +137,24 @@ export default {
           if (res.data.errors) {
             this.$noty.error(res.data.errors[0].message);
           } else {
-            this.$store.commit('addCategories', res.data.data.addCategory);
+            this.$store.commit('addCategory', res.data.data.addCategory);
+            this.hideDrawer();
+          }
+          this.sending = false;
+        });
+    },
+
+    deleteCategory() {
+      this.sending = true;
+
+      axios.post('/api', {
+        query: `mutation{removeCategory(id: "${this.id}") {id}}`,
+      })
+        .then((res) => {
+          if (res.data.errors) {
+            this.$noty.error(res.data.errors[0].message);
+          } else {
+            this.$store.commit('removeCategory', this.id);
             this.hideDrawer();
           }
           this.sending = false;

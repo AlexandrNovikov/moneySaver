@@ -7,6 +7,7 @@ import Vuetify from 'vuetify';
 import VueCookie from 'vue-cookie';
 import VueNoty from 'vuejs-noty';
 import axios from 'axios';
+import _ from 'lodash';
 
 import 'vue-material/dist/vue-material.min.css';
 import 'vuetify/dist/vuetify.min.css';
@@ -26,6 +27,7 @@ Vue.use(Vuex);
 Vue.use(VueMaterial);
 Vue.use(Vuetify);
 Vue.use(VueCookie);
+Object.defineProperty(Vue.prototype, '$_', { value: _ });
 
 const store = new Vuex.Store({
   state: {
@@ -42,8 +44,11 @@ const store = new Vuex.Store({
     setCategories(state, payload) {
       state.categories = payload;
     },
-    addCategories(state, payload) {
+    addCategory(state, payload) {
       state.categories.unshift(payload);
+    },
+    removeCategory(state, payload) {
+      _.remove(state.categories, n => n.id === payload);
     },
   },
 });

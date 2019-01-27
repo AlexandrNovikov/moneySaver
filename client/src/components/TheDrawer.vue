@@ -27,7 +27,7 @@
         <md-list-item
           v-for="category in categories"
           :key="category.id"
-          @click="clickCategoryHandler(category.name, category.description)"
+          @click="clickCategoryHandler(category.id, category.name, category.description)"
         >
           <span class="md-list-item-text">{{category.description}}</span>
 
@@ -40,6 +40,7 @@
     <md-drawer class="md-right category" :md-active.sync="secondPanel">
       <TheDrawerCategory
         v-if="secondPanel"
+        :id="categoryId"
         :currentName="categoryName"
         :currentDesc="categoryDesc"
         @hide="hideCategoryPanel">
@@ -60,6 +61,7 @@ export default {
     return {
       sidePanelVisible: false,
       secondPanel: false,
+      categoryId: null,
       categoryName: null,
       categoryDesc: null,
     };
@@ -87,7 +89,8 @@ export default {
       this.secondPanel = false;
     },
 
-    clickCategoryHandler(name = '', description = '') {
+    clickCategoryHandler(id = '', name = '', description = '') {
+      this.categoryId = id;
       this.categoryName = name;
       this.categoryDesc = description;
       this.secondPanel = true;
