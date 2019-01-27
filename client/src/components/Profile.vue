@@ -1,12 +1,10 @@
 <template>
   <div>
     <div class="center">
-    <div>{{this.msg}}</div>
-    <div>User data:</div>
-    <p>Username: {{this.username}}</p>
-    <p>Email: {{this.email}}</p>
-    <div>
-    </div>
+      <div>{{this.msg}}</div>
+      <div>User data:</div>
+      <p>Username: {{this.username}}</p>
+      <p>Email: {{this.email}}</p>
 
       <md-speed-dial class="md-bottom-right">
         <md-speed-dial-target class="md-primary">
