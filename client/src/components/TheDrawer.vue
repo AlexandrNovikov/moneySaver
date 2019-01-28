@@ -18,7 +18,7 @@
         <span class="md-title">Categories</span>
       </md-toolbar>
       <md-subheader class="md-primary">
-        <span class="md-subheading">Spendings</span>
+        <span class="md-subheading">Spending</span>
         <div class="md-toolbar-section-end">
           <md-button @click="clickCategoryHandler(false)" class="md-icon-button">
             <md-icon>add</md-icon>

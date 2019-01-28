@@ -7,7 +7,7 @@
           <md-icon>arrow_back</md-icon>
         </md-button>
       </div>
-      <span class="md-title">Category</span>
+      <span class="md-title">{{isIncome ? 'Income' : 'Spending'}} category</span>
       <div class="md-toolbar-section-end">
         <md-button v-if="currentName" @click="deleteCategory" class="md-icon-button">
           <md-icon>delete</md-icon>
