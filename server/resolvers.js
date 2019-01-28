@@ -93,13 +93,13 @@ const resolvers = {
       throw new Error(errorName.BAD_REQUEST);
     }
 
-    let updatedData = (!args.name) ? {description: args.description}:
-        (!args.description) ? {name: args.name}:
+    let updatedData = (!args.name) ? {description: args.description} :
+        (!args.description) ? {name: args.name} :
         {name: args.name, description: args.description};
 
-    return await Category.findOneAndUpdate({id: args.id}, updatedData, function (err) {
-      if (err) throw new Error(errorName.UNKNOWN_ERROR);
-    });
+    return await Category.findOneAndUpdate({id: args.id}, {$set:updatedData}, {new: true}, (err) => {
+        if (err) throw new Error(errorName.UNKNOWN_ERROR);
+      });
   },
 
   // FINALIZED Handles getting current user data

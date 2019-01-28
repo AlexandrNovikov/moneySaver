@@ -107,8 +107,8 @@ export default {
       return categories;
     },
     isEdited() {
-      return this.$v.form.description.$model !== this.currentDesc ||
-        this.$v.form.name.$model !== this.currentName;
+      return this.form.name !== this.currentName ||
+        this.form.description !== this.currentDesc;
     },
   },
   methods: {
@@ -144,6 +144,24 @@ export default {
         });
     },
 
+    updateCategory() {
+      this.sending = true;
+
+      axios.post('/api', {
+        query: `mutation{updateCategory(id: "${this.id}" name: "${this.form.name}", description: "${this.form.description}") {id, name, description}}`,
+      })
+        .then((res) => {
+          if (res.data.errors) {
+            this.$noty.error(res.data.errors[0].message);
+          } else {
+            this.$store.commit('updateCategory', res.data.data.updateCategory);
+            this.hideDrawer();
+          }
+          this.sending = false;
+        });
+    },
+
+
     deleteCategory() {
       this.sending = true;
 
@@ -165,7 +183,8 @@ export default {
       this.$v.$touch();
 
       if (!this.$v.$invalid) {
-        this.saveCategory();
+        /* eslint-disable no-unused-expressions */
+        this.id ? this.updateCategory() : this.saveCategory();
       }
     },
 

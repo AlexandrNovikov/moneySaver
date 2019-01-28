@@ -139,7 +139,7 @@ export default {
       return '';
     },
 
-    saveUser() {
+    signUp() {
       this.sending = true;
 
       axios.post('/api', {
@@ -163,7 +163,7 @@ export default {
       this.$v.$touch();
 
       if (!this.$v.$invalid) {
-        this.saveUser();
+        this.signUp();
       }
     },
   },

@@ -50,6 +50,11 @@ const store = new Vuex.Store({
     removeCategory(state, payload) {
       _.remove(state.categories, n => n.id === payload);
     },
+    updateCategory(state, payload) {
+      const updated = _.find(state.categories, o => o.id === payload.id);
+      updated.name = payload.name;
+      updated.description = payload.description;
+    },
   },
 });
 
