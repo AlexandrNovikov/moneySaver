@@ -5,7 +5,8 @@ const categorySchema = new mongoose.Schema({
     id: String,
     userId: String,
     name: String,
-    description: String
+    description: String,
+    isIncome: Boolean
 });
 
 // Export Mongoose "Category" model

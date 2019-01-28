@@ -59,6 +59,7 @@ const resolvers = {
         userId: user.user.id,
         name: args.name,
         description: args.description,
+        isIncome: args.isIncome,
       });
 
       try {

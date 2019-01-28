@@ -7,6 +7,7 @@ const typeDefs = `
       userId: String!
       name: String!
       description: String!
+      isIncome: Boolean!
     }
   
     type Query {
@@ -14,9 +15,9 @@ const typeDefs = `
     }
   
     type Mutation {
-      addCategory(name: String!, description: String!): Category!
+      addCategory(name: String!, description: String!, isIncome: Boolean!): Category!
       removeCategory(id: String!): Category!
-      updateCategory(id: String!, name: String, description: String): Category
+      updateCategory(id: String!, name: String, description: String): Category!
     }
 `;
 

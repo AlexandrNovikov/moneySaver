@@ -4,38 +4,62 @@ const categories = [
   {
     'name': 'local_taxi',
     'description': 'Taxi',
+    'isIncome': false,
   },
   {
     'name': 'restaurant',
     'description': 'Food',
+    'isIncome': false,
   },
   {
     'name': 'train',
-    'description': 'Transport'
+    'description': 'Transport',
+    'isIncome': false,
   },
   {
     'name': 'flight',
-    'description': 'Vacation'
+    'description': 'Vacation',
+    'isIncome': false,
   },
   {
     'name': 'fitness_center',
-    'description': 'Sport'
+    'description': 'Sport',
+    'isIncome': false,
   },
   {
     'name': 'school',
-    'description': 'Education'
+    'description': 'Education',
+    'isIncome': false,
   },
   {
     'name': 'home',
-    'description': 'Home'
+    'description': 'Home',
+    'isIncome': false,
   },
   {
     'name': 'pets',
-    'description': 'Pets'
+    'description': 'Pets',
+    'isIncome': false,
   },
   {
     'name': 'local_pharmacy',
-    'description': 'Health'
+    'description': 'Health',
+    'isIncome': false,
+  },
+  {
+    'name': 'attach_money',
+    'description': 'Salary',
+    'isIncome': true,
+  },
+  {
+    'name': 'account_balance',
+    'description': 'Deposit',
+    'isIncome': true,
+  },
+  {
+    'name': 'account_balance_wallet',
+    'description': 'Savings',
+    'isIncome': true,
   },
 ];
 
