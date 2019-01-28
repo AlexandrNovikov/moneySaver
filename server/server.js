@@ -49,7 +49,10 @@ app.use('/api', (req, res) => {
     },
     formatError: (err) => {
       const error = getErrorCode(err.message);
-      return ({ message: error.message, statusCode: error.statusCode })
+      if (error) {
+        return ({ message: error.message, statusCode: error.statusCode })
+      }
+      return ({ message: err.message })
     }
   })(req, res)
 });

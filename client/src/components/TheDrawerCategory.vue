@@ -77,6 +77,10 @@ export default {
       required: false,
       default: '',
     },
+    isIncome: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   validations: {
@@ -131,7 +135,7 @@ export default {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{addCategory(name: "${this.form.name}", description: "${this.form.description}") {id name description}}`,
+        query: `mutation{addCategory(name: "${this.form.name}", description: "${this.form.description}", isIncome: ${this.isIncome}) {id name description isIncome}}`,
       })
         .then((res) => {
           if (res.data.errors) {
@@ -140,15 +144,15 @@ export default {
             this.$store.commit('addCategory', res.data.data.addCategory);
             this.hideDrawer();
           }
-          this.sending = false;
-        });
+        }).catch((e) => { this.$noty.error(`${e.message}. Please reload page and try again`); })
+        .finally(() => { this.sending = false; });
     },
 
     updateCategory() {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{updateCategory(id: "${this.id}" name: "${this.form.name}", description: "${this.form.description}") {id, name, description}}`,
+        query: `mutation{updateCategory(id: "${this.id}" name: "${this.form.name}", description: "${this.form.description}") {id name description isIncome}}`,
       })
         .then((res) => {
           if (res.data.errors) {
@@ -166,13 +170,13 @@ export default {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{removeCategory(id: "${this.id}") {id}}`,
+        query: `mutation{removeCategory(id: "${this.id}") {id, isIncome}}`,
       })
         .then((res) => {
           if (res.data.errors) {
             this.$noty.error(res.data.errors[0].message);
           } else {
-            this.$store.commit('removeCategory', this.id);
+            this.$store.commit('removeCategory', res.data.data.removeCategory);
             this.hideDrawer();
           }
           this.sending = false;

@@ -1,5 +1,3 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueMaterial from 'vue-material';
@@ -32,8 +30,10 @@ Object.defineProperty(Vue.prototype, '$_', { value: _ });
 const store = new Vuex.Store({
   state: {
     isAuthorized: VueCookie.get('auth') || false,
-    categories: [],
+    incomeCategories: [],
+    spendingCategories: [],
   },
+  /* eslint-disable no-unused-expressions */
   mutations: {
     login(state, payload) {
       state.isAuthorized = payload;
@@ -42,16 +42,21 @@ const store = new Vuex.Store({
       state.isAuthorized = false;
     },
     setCategories(state, payload) {
-      state.categories = payload;
+      state.incomeCategories = _.filter(payload, n => n.isIncome);
+      state.spendingCategories = _.filter(payload, n => !n.isIncome);
     },
     addCategory(state, payload) {
-      state.categories.unshift(payload);
+      payload.isIncome ? state.incomeCategories.unshift(payload) :
+        state.spendingCategories.unshift(payload);
     },
     removeCategory(state, payload) {
-      _.remove(state.categories, n => n.id === payload);
+      payload.isIncome ? _.remove(state.incomeCategories, n => n.id === payload.id) :
+        _.remove(state.spendingCategories, n => n.id === payload.id);
     },
     updateCategory(state, payload) {
-      const updated = _.find(state.categories, o => o.id === payload.id);
+      const updated = payload.isIncome ? _.find(state.incomeCategories, n => n.id === payload.id) :
+        _.find(state.spendingCategories, n => n.id === payload.id);
+
       updated.name = payload.name;
       updated.description = payload.description;
     },

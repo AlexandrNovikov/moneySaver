@@ -16,18 +16,44 @@
     <md-drawer class="md-right" :md-active.sync="sidePanelVisible">
       <md-toolbar class="md-toolbar md-primary" md-elevation="4">
         <span class="md-title">Categories</span>
-        <div class="md-toolbar-section-end">
-        <md-button @click="clickCategoryHandler()" class="md-icon-button">
-          <md-icon>add</md-icon>
-        </md-button>
-        </div>
       </md-toolbar>
-
+      <md-subheader class="md-primary">
+        <span class="md-subheading">Spendings</span>
+        <div class="md-toolbar-section-end">
+          <md-button @click="clickCategoryHandler(false)" class="md-icon-button">
+            <md-icon>add</md-icon>
+          </md-button>
+        </div>
+      </md-subheader>
+      <md-divider></md-divider>
       <md-list>
         <md-list-item
-          v-for="category in categories"
+          v-for="category in spendingCategories"
           :key="category.id"
-          @click="clickCategoryHandler(category.id, category.name, category.description)"
+          @click="clickCategoryHandler(false, category.id, category.name, category.description)"
+        >
+          <span class="md-list-item-text">{{category.description}}</span>
+
+          <md-button class="md-icon-button md-list-action">
+            <md-icon class="md-primary">{{category.name}}</md-icon>
+          </md-button>
+        </md-list-item>
+      </md-list>
+      <md-divider></md-divider>
+      <md-subheader class="md-primary">
+        <span class="md-subheading">Income</span>
+        <div class="md-toolbar-section-end">
+          <md-button @click="clickCategoryHandler(true)" class="md-icon-button">
+            <md-icon>add</md-icon>
+          </md-button>
+        </div>
+      </md-subheader>
+      <md-divider></md-divider>
+      <md-list>
+        <md-list-item
+          v-for="category in incomeCategories"
+          :key="category.id"
+          @click="clickCategoryHandler(true, category.id, category.name, category.description)"
         >
           <span class="md-list-item-text">{{category.description}}</span>
 
@@ -43,6 +69,7 @@
         :id="categoryId"
         :currentName="categoryName"
         :currentDesc="categoryDesc"
+        :isIncome = "categoryIsIncome"
         @hide="hideCategoryPanel">
       </TheDrawerCategory>
     </md-drawer>
@@ -64,6 +91,7 @@ export default {
       categoryId: null,
       categoryName: null,
       categoryDesc: null,
+      categoryIsIncome: null,
     };
   },
 
@@ -71,8 +99,11 @@ export default {
     isAuthorized() {
       return this.$store.state.isAuthorized;
     },
-    categories() {
-      return this.$store.state.categories;
+    incomeCategories() {
+      return this.$store.state.incomeCategories;
+    },
+    spendingCategories() {
+      return this.$store.state.spendingCategories;
     },
   },
   methods: {
@@ -89,10 +120,11 @@ export default {
       this.secondPanel = false;
     },
 
-    clickCategoryHandler(id = '', name = '', description = '') {
+    clickCategoryHandler(isIncome, id = '', name = '', description = '') {
       this.categoryId = id;
       this.categoryName = name;
       this.categoryDesc = description;
+      this.categoryIsIncome = isIncome;
       this.secondPanel = true;
     },
   },
