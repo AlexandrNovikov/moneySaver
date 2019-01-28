@@ -16,6 +16,7 @@ const typeDefs = `
     type Mutation {
       addCategory(name: String!, description: String!): Category!
       removeCategory(id: String!): Category!
+      updateCategory(id: String!, name: String, description: String): Category
     }
 `;
 

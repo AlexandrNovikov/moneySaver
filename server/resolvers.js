@@ -84,6 +84,24 @@ const resolvers = {
     });
   },
 
+  updateCategory: async (args, user) => {
+    if (!user.user) {
+      throw new Error(errorName.NOT_AUTHORIZED);
+    }
+
+    if (!args.id || (!args.name && !args.description)) {
+      throw new Error(errorName.BAD_REQUEST);
+    }
+
+    let updatedData = (!args.name) ? {description: args.description}:
+        (!args.description) ? {name: args.name}:
+        {name: args.name, description: args.description};
+
+    return await Category.findOneAndUpdate({id: args.id}, updatedData, function (err) {
+      if (err) throw new Error(errorName.UNKNOWN_ERROR);
+    });
+  },
+
   // FINALIZED Handles getting current user data
   async me (_, args) { //TODO  Model.findById read about it in mongoose docs https://mongoosejs.com/docs/queries.html
     if (!args.user) {
