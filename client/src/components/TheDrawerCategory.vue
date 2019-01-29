@@ -7,7 +7,7 @@
           <md-icon>arrow_back</md-icon>
         </md-button>
       </div>
-      <span class="md-title">{{isIncome ? 'Income' : 'Spending'}} category</span>
+      <span class="md-title">{{isIncome ? 'Income' : 'Spending'}}</span>
       <div class="md-toolbar-section-end">
         <md-button v-if="currentName" @click="deleteCategory" class="md-icon-button">
           <md-icon>delete</md-icon>
@@ -202,7 +202,6 @@ export default {
 <style lang="scss" scoped>
 
   .icons {
-    padding: 16px;
     display: flex;
     flex-wrap: wrap;
   }

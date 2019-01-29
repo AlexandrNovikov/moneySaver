@@ -157,7 +157,7 @@ export default {
   }
 
   .md-drawer.category {
-    width: 330px;
+    width: 300px;
     max-width: calc(100vw - 125px);
   }
 </style>
