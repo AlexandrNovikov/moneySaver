@@ -1,8 +1,10 @@
 const Book = require('./models/Book');
 const User = require('./models/User');
 const Category = require('./models/Category');
+const Transaction = require('./models/Transaction');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
+const _ = require('lodash');
 const { secret } = require('./config');
 const authSrv = require('./services/authSrv');
 const { errorName } = require('./services/constants');
@@ -101,6 +103,51 @@ const resolvers = {
     return await Category.findOneAndUpdate({id: args.id}, {$set:updatedData}, {new: true}, (err) => {
         if (err) throw new Error(errorName.UNKNOWN_ERROR);
       });
+  },
+
+  async transactions (args, user) {
+    if (!user.user) {
+      throw new Error(errorName.NOT_AUTHORIZED);
+    }
+
+    if(args.categoryId && !_.isUndefined(args.isIncome)) {
+       return await Transaction.find({ userId: user.user.id, categoryId: args.categoryId, isIncome: args.isIncome });
+    } else if (args.categoryId)  {
+      return await Transaction.find({ userId: user.user.id, categoryId: args.categoryId });
+    } else if (!_.isUndefined(args.isIncome)) {
+      return await Transaction.find({ userId: user.user.id, isIncome: args.isIncome });
+    }
+
+    return await Transaction.find({ userId: user.user.id });
+  },
+
+  addTransaction: async (args, user) => {
+    if (!user.user) {
+      throw new Error(errorName.NOT_AUTHORIZED);
+    }
+
+    category = await Category.findOne({ id: args.categoryId, userId: user.user.id });
+
+    if (!category || !args.amount || _.isUndefined(args.isIncome)) {
+      throw new Error(errorName.BAD_REQUEST); //TODO check getting this and same in all endpoints
+    }
+
+    let transaction = await new Transaction({
+      id: authSrv.generateId(),
+      userId: user.user.id,
+      categoryId: args.categoryId,
+      amount: args.amount,
+      description: args.description || '',
+      isIncome: args.isIncome,
+    });
+
+    try {
+      await transaction.save();
+    } catch (error) {
+      throw new Error(errorName.UNKNOWN_ERROR);
+    }
+
+    return transaction;
   },
 
   // FINALIZED Handles getting current user data
