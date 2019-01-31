@@ -1,10 +1,10 @@
-const { addIds } = require('./defaultData');
+const { addUserId } = require('./defaultData');
 const Category = require('../models/Category');
 
 const seedData = {
 
   seedDefaultCategories(userId) {
-    let categories = addIds(userId);
+    let categories = addUserId(userId);
 
     Category.collection.insertMany(categories, {forceServerObjectId: true}, function (err) {
       if (err) {

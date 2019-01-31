@@ -1,5 +1,3 @@
-const authSrv = require('./authSrv');
-
 const categories = [
   {
     'name': 'local_taxi',
@@ -64,9 +62,8 @@ const categories = [
 ];
 
 module.exports = {
-  addIds: function(userId) {
+  addUserId: function(userId) {
     categories.forEach(function (elem) {
-      elem['id'] = authSrv.generateId();
       elem['userId'] = userId
     });
 
