@@ -26,7 +26,8 @@ const typeDefs = `
     }
   
     type Query {
-      categories(id: String, isIncome: Boolean): [Category]
+      category(id: String!): [Category]
+      categories(isIncome: Boolean): [Category]
     }
   
     type Mutation {

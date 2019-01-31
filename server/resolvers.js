@@ -38,14 +38,24 @@ const resolvers = {
     return doc
   },
 
-  async categories (args, user) { //TODO make two separate queries and resolvers for category(id) and categories(isIncome)
+  async category(args, user) {
     if (!user.user) {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
-    const filters = (args.id && !_.isUndefined(args.isIncome)) ? { userId: user.user.id, _id: args.id, isIncome: args.isIncome } :
-      (args.id) ? { userId: user.user.id, _id: args.id } :
-        (!_.isUndefined(args.isIncome)) ? { userId: user.user.id, isIncome: args.isIncome } :
-          {userId: user.user.id};
+
+    if (!args.id) {
+      throw new Error(errorName.BAD_REQUEST);
+    }
+
+    return await Category.find({ userId: user.user.id, _id: args.id });
+  },
+
+  async categories(args, user) {
+    if (!user.user) {
+      throw new Error(errorName.NOT_AUTHORIZED);
+    }
+
+    const filters = (!_.isUndefined(args.isIncome)) ? { userId: user.user.id, isIncome: args.isIncome } : { userId: user.user.id };
 
     return await Category.find(filters);
   },
