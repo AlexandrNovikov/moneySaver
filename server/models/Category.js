@@ -1,12 +1,17 @@
 const mongoose = require('mongoose');
 
-// Mongoose Model
+const transactionSchema = new mongoose.Schema({
+  amount: Number,
+  description: String,
+  createdAt: { type: Date, default: Date.now },
+});
+
 const categorySchema = new mongoose.Schema({
-    id: String,
     userId: String,
     name: String,
     description: String,
-    isIncome: Boolean
+    isIncome: Boolean,
+    transactions: [transactionSchema],
 });
 
 // Export Mongoose "Category" model

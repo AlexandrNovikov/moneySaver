@@ -1,7 +1,6 @@
 const Book = require('./models/Book');
 const User = require('./models/User');
 const Category = require('./models/Category');
-const Transaction = require('./models/Transaction');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const _ = require('lodash');
@@ -39,12 +38,16 @@ const resolvers = {
     return doc
   },
 
-  async categories (args, user) {
+  async categories (args, user) { //TODO make two separate queries and resolvers for category(id) and categories(isIncome)
     if (!user.user) {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
+    const filters = (args.id && !_.isUndefined(args.isIncome)) ? { userId: user.user.id, _id: args.id, isIncome: args.isIncome } :
+      (args.id) ? { userId: user.user.id, _id: args.id } :
+        (!_.isUndefined(args.isIncome)) ? { userId: user.user.id, isIncome: args.isIncome } :
+          {userId: user.user.id};
 
-    return await Category.find({userId: user.user.id});
+    return await Category.find(filters);
   },
 
   addCategory: async (args, user) => {
@@ -57,7 +60,6 @@ const resolvers = {
       }
 
       let category = await new Category({
-        id: authSrv.generateId(),
         userId: user.user.id,
         name: args.name,
         description: args.description,
@@ -65,12 +67,10 @@ const resolvers = {
       });
 
       try {
-        await category.save();
+        return await category.save();
       } catch (error) {
         throw new Error(errorName.UNKNOWN_ERROR);
       }
-
-      return category;
   },
 
   removeCategory: async (args, user) => {
@@ -83,7 +83,7 @@ const resolvers = {
     }
 
     return await Category.findOneAndRemove({
-      id: args.id
+      _id: args.id
     });
   },
 
@@ -100,25 +100,9 @@ const resolvers = {
         (!args.description) ? {name: args.name} :
         {name: args.name, description: args.description};
 
-    return await Category.findOneAndUpdate({id: args.id}, {$set:updatedData}, {new: true}, (err) => {
+    return await Category.findOneAndUpdate({_id: args.id, userId: user.user.id}, {$set: updatedData}, {new: true}, (err) => {
         if (err) throw new Error(errorName.UNKNOWN_ERROR);
       });
-  },
-
-  async transactions (args, user) {
-    if (!user.user) {
-      throw new Error(errorName.NOT_AUTHORIZED);
-    }
-
-    if(args.categoryId && !_.isUndefined(args.isIncome)) {
-       return await Transaction.find({ userId: user.user.id, categoryId: args.categoryId, isIncome: args.isIncome });
-    } else if (args.categoryId)  {
-      return await Transaction.find({ userId: user.user.id, categoryId: args.categoryId });
-    } else if (!_.isUndefined(args.isIncome)) {
-      return await Transaction.find({ userId: user.user.id, isIncome: args.isIncome });
-    }
-
-    return await Transaction.find({ userId: user.user.id });
   },
 
   addTransaction: async (args, user) => {
@@ -126,28 +110,65 @@ const resolvers = {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
 
-    category = await Category.findOne({ id: args.categoryId, userId: user.user.id });
+    category = await Category.findOne({ _id: args.categoryId, userId: user.user.id });
 
-    if (!category || !args.amount || _.isUndefined(args.isIncome)) {
-      throw new Error(errorName.BAD_REQUEST); //TODO check getting this and same in all endpoints
+    if (!category || !args.amount) {
+      throw new Error(errorName.BAD_REQUEST);
     }
 
-    let transaction = await new Transaction({
-      id: authSrv.generateId(),
-      userId: user.user.id,
-      categoryId: args.categoryId,
-      amount: args.amount,
-      description: args.description || '',
-      isIncome: args.isIncome,
-    });
+    const index = category.transactions.push({amount: args.amount, description: args.description || ''});
 
     try {
-      await transaction.save();
+      const test = await category.save();
+      return test.transactions[index - 1];
+    } catch (error) {
+      throw new Error(errorName.UNKNOWN_ERROR);
+    }
+  },
+
+  removeTransaction: async (args, user) => {
+    if (!user.user) {
+      throw new Error(errorName.NOT_AUTHORIZED);
+    }
+
+    if (!args.id) {
+      throw new Error(errorName.BAD_REQUEST);
+    }
+
+    category = await Category.findOne({ 'transactions._id': args.id, userId: user.user.id });
+
+    let removed = category.transactions.id(args.id).remove();
+
+    try {
+      await category.save();
     } catch (error) {
       throw new Error(errorName.UNKNOWN_ERROR);
     }
 
-    return transaction;
+    return removed;
+  },
+
+  updateTransaction: async (args, user) => {
+    let {id, amount, description, createdAt} = args.input;
+
+    if (!user.user) {
+      throw new Error(errorName.NOT_AUTHORIZED);
+    }
+
+    if (!id || (!amount && !description && !createdAt)) {
+      throw new Error(errorName.BAD_REQUEST);
+    }
+
+    category = await Category.findOne({ 'transactions._id': id, userId: user.user.id });
+    let updating = category.transactions.id(id);
+
+    const test = await Category.findOneAndUpdate({ userId: user.user.id, 'transactions._id': id },
+      { $set: { "transactions.$.amount": amount || updating.amount, "transactions.$.description": description || updating.description,
+          "transactions.$.createdAt": createdAt || updating.createdAt }}, { new: true }, (err) => {
+      if (err) throw new Error(errorName.UNKNOWN_ERROR);
+    });
+
+    return test.transactions.id(id);
   },
 
   // FINALIZED Handles getting current user data
