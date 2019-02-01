@@ -8,7 +8,7 @@ const transactionSchema = new mongoose.Schema({
 });
 
 const categorySchema = new mongoose.Schema({
-    userId: ObjectId,
+    _userId: ObjectId,
     name: String,
     description: String,
     isIncome: Boolean,

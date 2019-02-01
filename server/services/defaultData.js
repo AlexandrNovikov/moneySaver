@@ -64,7 +64,7 @@ const categories = [
 module.exports = {
   addUserId: function(userId) {
     categories.forEach(function (elem) {
-      elem['userId'] = userId
+      elem['_userId'] = userId
     });
 
     return categories

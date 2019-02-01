@@ -3,8 +3,8 @@ const { makeExecutableSchema } = require('graphql-tools');
 
 const typeDefs = `
     type Category {
-      id: ID!
-      userId: ID!
+      _id: ID!
+      _userId: ID!
       name: String!
       description: String!
       isIncome: Boolean!
@@ -12,30 +12,30 @@ const typeDefs = `
     }
     
     type Transaction {
-      id: ID!
+      _id: ID!
       amount: Float!
       description: String
       createdAt: String
     }
     
     input updateTransactionInput {
-      id: ID!
+      _id: ID!
       amount: Float
       description: String
       createdAt: String
     }
   
     type Query {
-      category(id: String!): [Category]
+      category(_id: ID!): [Category]
       categories(isIncome: Boolean): [Category]
     }
   
     type Mutation {
       addCategory(name: String!, description: String!, isIncome: Boolean!): Category!
-      removeCategory(id: String!): Category!
-      updateCategory(id: String!, name: String, description: String): Category!
-      addTransaction(categoryId: String!, amount: Float!, description: String): Transaction!
-      removeTransaction(id: String!): Transaction!
+      removeCategory(_id: ID!): Category!
+      updateCategory(_id: ID!, name: String, description: String): Category!
+      addTransaction(categoryId: ID!, amount: Float!, description: String): Transaction!
+      removeTransaction(_id: ID!): Transaction!
       updateTransaction(input: updateTransactionInput!): Transaction!
     }
 `;
