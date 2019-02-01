@@ -30,7 +30,7 @@
         <md-list-item
           v-for="category in spendingCategories"
           :key="category.id"
-          @click="clickCategoryHandler(false, category.id, category.name, category.description)"
+          @click="clickCategoryHandler(false, category._id, category.name, category.description)"
         >
           <span class="md-list-item-text">{{category.description}}</span>
 
@@ -53,7 +53,7 @@
         <md-list-item
           v-for="category in incomeCategories"
           :key="category.id"
-          @click="clickCategoryHandler(true, category.id, category.name, category.description)"
+          @click="clickCategoryHandler(true, category._id, category.name, category.description)"
         >
           <span class="md-list-item-text">{{category.description}}</span>
 
@@ -66,7 +66,7 @@
     <md-drawer class="md-right category" :md-active.sync="secondPanel">
       <TheDrawerCategory
         v-if="secondPanel"
-        :id="categoryId"
+        :_id="categoryId"
         :currentName="categoryName"
         :currentDesc="categoryDesc"
         :isIncome = "categoryIsIncome"
@@ -120,8 +120,8 @@ export default {
       this.secondPanel = false;
     },
 
-    clickCategoryHandler(isIncome, id = '', name = '', description = '') {
-      this.categoryId = id;
+    clickCategoryHandler(isIncome, _id = '', name = '', description = '') {
+      this.categoryId = _id;
       this.categoryName = name;
       this.categoryDesc = description;
       this.categoryIsIncome = isIncome;

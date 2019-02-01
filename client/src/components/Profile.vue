@@ -58,7 +58,7 @@ export default {
 
     fetchCategories() {
       axios.post('/api', {
-        query: '{categories{id, name, description, isIncome}}',
+        query: '{categories{_id, name, description, isIncome}}',
       })
         .then((res) => {
           this.$store.commit('setCategories', res.data.data.categories);

@@ -34,6 +34,7 @@ const store = new Vuex.Store({
     spendingCategories: [],
   },
   /* eslint-disable no-unused-expressions */
+  /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
   mutations: {
     login(state, payload) {
       state.isAuthorized = payload;
@@ -50,12 +51,13 @@ const store = new Vuex.Store({
         state.spendingCategories.unshift(payload);
     },
     removeCategory(state, payload) {
-      payload.isIncome ? _.remove(state.incomeCategories, n => n.id === payload.id) :
-        _.remove(state.spendingCategories, n => n.id === payload.id);
+      payload.isIncome ? _.remove(state.incomeCategories, n => n._id === payload._id) :
+        _.remove(state.spendingCategories, n => n._id === payload._id);
     },
     updateCategory(state, payload) {
-      const updated = payload.isIncome ? _.find(state.incomeCategories, n => n.id === payload.id) :
-        _.find(state.spendingCategories, n => n.id === payload.id);
+      const updated = payload.isIncome ?
+        _.find(state.incomeCategories, n => n._id === payload._id) :
+        _.find(state.spendingCategories, n => n._id === payload._id);
 
       updated.name = payload.name;
       updated.description = payload.description;

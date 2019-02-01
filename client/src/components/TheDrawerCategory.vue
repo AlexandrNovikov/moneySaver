@@ -58,11 +58,12 @@ import { required } from 'vuelidate/lib/validators';
 import { categories } from '../services/constants';
 
 export default {
+  /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
   name: 'TheDrawerCategory',
   mixins: [validationMixin],
 
   props: {
-    id: {
+    _id: {
       type: String,
       required: false,
       default: '',
@@ -135,7 +136,7 @@ export default {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{addCategory(name: "${this.form.name}", description: "${this.form.description}", isIncome: ${this.isIncome}) {id name description isIncome}}`,
+        query: `mutation{addCategory(name: "${this.form.name}", description: "${this.form.description}", isIncome: ${this.isIncome}) {_id name description isIncome}}`,
       })
         .then((res) => {
           if (res.data.errors) {
@@ -152,7 +153,7 @@ export default {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{updateCategory(id: "${this.id}" name: "${this.form.name}", description: "${this.form.description}") {id name description isIncome}}`,
+        query: `mutation{updateCategory(_id: "${this._id}" name: "${this.form.name}", description: "${this.form.description}") {_id name description isIncome}}`,
       })
         .then((res) => {
           if (res.data.errors) {
@@ -170,7 +171,7 @@ export default {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{removeCategory(id: "${this.id}") {id, isIncome}}`,
+        query: `mutation{removeCategory(_id: "${this._id}") {_id, isIncome}}`,
       })
         .then((res) => {
           if (res.data.errors) {
@@ -188,7 +189,7 @@ export default {
 
       if (!this.$v.$invalid) {
         /* eslint-disable no-unused-expressions */
-        this.id ? this.updateCategory() : this.saveCategory();
+        this._id ? this.updateCategory() : this.saveCategory();
       }
     },
 
