@@ -4,7 +4,7 @@ const { makeExecutableSchema } = require('graphql-tools');
 const typeDefs = `
     type Category {
       id: ID!
-      userId: String!
+      userId: ID!
       name: String!
       description: String!
       isIncome: Boolean!

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const transactionSchema = new mongoose.Schema({
   amount: Number,
@@ -7,7 +8,7 @@ const transactionSchema = new mongoose.Schema({
 });
 
 const categorySchema = new mongoose.Schema({
-    userId: String,
+    userId: ObjectId,
     name: String,
     description: String,
     isIncome: Boolean,

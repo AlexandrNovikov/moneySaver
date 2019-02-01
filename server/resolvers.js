@@ -3,11 +3,15 @@ const User = require('./models/User');
 const Category = require('./models/Category');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
+const ObjectId = require('mongoose').Types.ObjectId;
 const _ = require('lodash');
 const { secret } = require('./config');
 const authSrv = require('./services/authSrv');
 const { errorName } = require('./services/constants');
 const seed = require('./services/seedData');
+ObjectId.prototype.valueOf = function () {
+  return this.toString();
+};
 
 const resolvers = {
 
@@ -181,33 +185,27 @@ const resolvers = {
     return test.transactions.id(id);
   },
 
-  // FINALIZED Handles getting current user data
-  async me (_, args) { //TODO  Model.findById read about it in mongoose docs https://mongoosejs.com/docs/queries.html
-    if (!args.user) {
+  async me(args, user) {
+    if (!user.user) {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
 
-    return await User.findOne({ id: args.user.id });
+    return await User.findById(user.user.id)
   },
 
-  // FINALIZED Handles user signup
-  async signup (args) {
-    if (!authSrv.isEmailValid(args.email)){
+  async signup(args) {
+    let {email, password, username} = args;
+
+    if (!authSrv.isEmailValid(email)){
       throw new Error(errorName.INVALID_EMAIL);
     }
-    const emailUsed = await User.findOne({ email: args.email});
+    const emailUsed = await User.findOne({ email: email});
     if (emailUsed){
       throw new Error(errorName.ALREADY_USED_EMAIL);
     }
 
-    let salt = bcrypt.genSaltSync(10);
-    let hash = await bcrypt.hashSync(args.password, salt);
-    let user = await new User({
-        id: authSrv.generateId(),
-        username: args.username,
-        email: args.email,
-        password: hash
-      });
+    let hash = await bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+    let user = await new User({ username, email, password: hash });
 
     try {
       await user.save();
@@ -216,19 +214,18 @@ const resolvers = {
     }
 
     try {
-      await seed.seedDefaultCategories(user.id);
+      await seed.seedDefaultCategories(user._id);
     } catch (error) {
       throw new Error(errorName.UNKNOWN_ERROR);
     }
 
     return jsonwebtoken.sign(
-      { id: user.id, email: user.email },
+      { id: user._id, email: user.email },
       secret,
       { expiresIn: '1d' }
     )
   },
 
-  // FINALIZED Handles user login
   async login (args) {
     const user = await User.findOne({ email: args.email});
     if (!user) {
@@ -241,7 +238,6 @@ const resolvers = {
       throw new Error(errorName.INVALID_PASSWORD);
     }
 
-    // return json web token
     return jsonwebtoken.sign(
       { id: user.id, email: user.email },
       secret,
@@ -250,6 +246,5 @@ const resolvers = {
   }
 
 };
-
 
 module.exports = resolvers;
