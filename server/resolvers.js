@@ -47,10 +47,6 @@ const resolvers = {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
 
-    if (!args._id) {
-      throw new Error(errorName.BAD_REQUEST);
-    }
-
     return await Category.find({ _userId: user.user.id, _id: args._id });
   },
 
@@ -65,26 +61,19 @@ const resolvers = {
   },
 
   addCategory: async (args, user) => {
-      if (!user.user) {
+    let { name, description, isIncome } = args;
+
+    if (!user.user) {
         throw new Error(errorName.NOT_AUTHORIZED);
-      }
+    }
 
-      if (!args.name || !args.description) {
-        throw new Error(errorName.BAD_REQUEST);
-      }
+    let category = await new Category({ _userId: user.user.id, name, description, isIncome });
 
-      let category = await new Category({
-        _userId: user.user.id,
-        name: args.name,
-        description: args.description,
-        isIncome: args.isIncome,
-      });
-
-      try {
-        return await category.save();
-      } catch (error) {
-        throw new Error(errorName.UNKNOWN_ERROR);
-      }
+    try {
+      return await category.save();
+    } catch (error) {
+      throw new Error(errorName.UNKNOWN_ERROR);
+    }
   },
 
   removeCategory: async (args, user) => {
@@ -92,13 +81,7 @@ const resolvers = {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
 
-    if (!args._id) {
-      throw new Error(errorName.BAD_REQUEST);
-    }
-
-    return await Category.findOneAndRemove({
-      _id: args._id
-    });
+    return await Category.findOneAndRemove({ _id: args._id });
   },
 
   updateCategory: async (args, user) => {
@@ -106,7 +89,7 @@ const resolvers = {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
 
-    if (!args._id || (!args.name && !args.description)) {
+    if (!args.name && !args.description) {
       throw new Error(errorName.BAD_REQUEST);
     }
 
@@ -126,7 +109,7 @@ const resolvers = {
 
     category = await Category.findOne({ _id: args.categoryId, _userId: user.user.id });
 
-    if (!category || !args.amount) {
+    if (!category) {
       throw new Error(errorName.BAD_REQUEST);
     }
 
@@ -143,10 +126,6 @@ const resolvers = {
   removeTransaction: async (args, user) => {
     if (!user.user) {
       throw new Error(errorName.NOT_AUTHORIZED);
-    }
-
-    if (!args._id) {
-      throw new Error(errorName.BAD_REQUEST); // FIXME remove if it's not neccessary here (cheking already implented in graphQl scheams)
     }
 
     category = await Category.findOne({ 'transactions._id': args._id, _userId: user.user.id });
@@ -169,20 +148,20 @@ const resolvers = {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
 
-    if (!_id || (!amount && !description && !createdAt)) {
+    if (!amount && !description && !createdAt) {
       throw new Error(errorName.BAD_REQUEST);
     }
 
     category = await Category.findOne({ 'transactions._id': _id, _userId: user.user.id });
     let updating = category.transactions.id(_id);
 
-    const test = await Category.findOneAndUpdate({ _userId: user.user.id, 'transactions._id': _id },
+    const updatedCategory = await Category.findOneAndUpdate({ _userId: user.user.id, 'transactions._id': _id },
       { $set: { "transactions.$.amount": amount || updating.amount, "transactions.$.description": description || updating.description,
           "transactions.$.createdAt": createdAt || updating.createdAt }}, { new: true }, (err) => {
       if (err) throw new Error(errorName.UNKNOWN_ERROR);
     });
 
-    return test.transactions.id(_id);
+    return updatedCategory.transactions.id(_id);
   },
 
   async me(args, user) {
@@ -194,7 +173,7 @@ const resolvers = {
   },
 
   async signup(args) {
-    let {email, password, username} = args;
+    let { email, password, username } = args;
 
     if (!authSrv.isEmailValid(email)){
       throw new Error(errorName.INVALID_EMAIL);
