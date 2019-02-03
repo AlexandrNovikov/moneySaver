@@ -16,12 +16,12 @@
       <v-card>
         <form novalidate @submit.prevent="validateTransaction">
         <v-toolbar>
-          <v-btn icon @click="dialog = false">
+          <v-btn icon @click="hideModal">
             <v-icon>close</v-icon>
           </v-btn>
           <v-toolbar-title>New transaction</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn icon type="submit" @click="dialog = false">
+          <v-btn icon type="submit">
             <v-icon>done</v-icon>
           </v-btn>
         </v-toolbar>
@@ -46,7 +46,7 @@
                     prepend-icon="event"
                     readonly
                   ></v-text-field>
-                  <v-date-picker v-model="form.date" @input="picker = false"></v-date-picker>
+                  <v-date-picker v-model="form.date" @input="picker = false" :max="currentDate"></v-date-picker>
                 </v-menu>
               </v-flex>
               <v-flex xs12>
@@ -56,6 +56,9 @@
                   label="Amount"
                   prepend-icon="money"
                   required
+                  :error-messages="amountErrors"
+                  @input="$v.form.amount.$touch()"
+                  @blur="$v.form.amount.$touch()"
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
@@ -68,17 +71,23 @@
               <v-flex v-if="!form.isIncome"
                       class="categories"
                       v-for="i in spendingCategories" :key="i._id" sm4>
-                <v-btn>{{i.description}}
+                <v-btn :class="{'primary':form.categoryId === i._id}"
+                       @click="categoryButtonHandler(i._id)"
+                >{{i.description}}
                   <v-icon right dark>{{i.name}}</v-icon>
                 </v-btn>
               </v-flex>
               <v-flex v-if="form.isIncome"
                       class="categories"
                       v-for="i in incomeCategories" :key="i._id" sm4>
-                <v-btn>{{i.description}}
+                <v-btn :class="{'primary':form.categoryId === i._id}"
+                       @click="categoryButtonHandler(i._id)"
+                >{{i.description}}
                   <v-icon right dark>{{i.name}}</v-icon>
                 </v-btn>
               </v-flex>
+              <hr v-if="isCategoryMissed" class="error--line">
+              <span v-if="isCategoryMissed" class="error--text">Please choose a category</span>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -90,7 +99,8 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { required } from 'vuelidate/lib/validators';
+import axios from 'axios';
+import { required, minValue } from 'vuelidate/lib/validators';
 
 export default {
   name: 'TransactionModal',
@@ -100,25 +110,28 @@ export default {
     return {
       dialog: false,
       picker: false,
-      categoriesMenu: false,
+      sending: false, //TODO use it for request progress
+      currentDate: new Date().toISOString().substr(0, 10),
       form: {
         date: new Date().toISOString().substr(0, 10),
-        amount: null,
-        description: null,
+        amount: '',
+        description: '',
         isIncome: false,
-        categoryId: null,
+        categoryId: '',
       },
     };
   },
 
   validations: {
     form: {
-      amount: {
-        required,
-      },
-      categoryId: {
-        required,
-      },
+      amount: { required, minValue: minValue(0.01) },
+      categoryId: { required },
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      !val && this.clearForm();
     },
   },
 
@@ -128,6 +141,16 @@ export default {
     },
     spendingCategories() {
       return this.$store.state.spendingCategories;
+    },
+    amountErrors() {
+      const errors = [];
+      if (!this.$v.form.amount.$dirty) return errors;
+      !this.$v.form.amount.required && errors.push('Please enter amount of your transaction');
+      !this.$v.form.amount.minValue && errors.push('Amount of your transaction should be more than 0.01');
+      return errors;
+    },
+    isCategoryMissed() {
+      return this.$v.form.categoryId.$invalid && this.$v.form.categoryId.$dirty;
     },
   },
 
@@ -142,6 +165,50 @@ export default {
       this.dialog = true;
     },
 
+    categoryButtonHandler(id) {
+      this.form.categoryId = id;
+    },
+
+    validateTransaction() {
+      this.$v.$touch();
+
+      if (!this.$v.$invalid) {
+        this.createTransaction();
+      }
+    },
+
+    createTransaction() {
+      this.sending = true;
+
+      axios.post('/api', {
+        query: `mutation{addTransaction(amount: ${this.form.amount}, categoryId: "${this.form.categoryId}", description: "${this.form.description}"){_id description amount createdAt}}`,
+      })
+        .then((res) => {
+          if (res.data.errors) {
+            this.$noty.error(res.data.errors[0].message);
+          } else {
+            console.log(res.data.data);
+            // this.$store.commit('addCategory', res.data.data.addCategory); // TODO store result to Vuex here
+            this.hideModal();
+          }
+        }).catch((e) => { this.$noty.error(`${e.message}. Please reload page and try again`); })
+        .finally(() => {
+          this.sending = false;
+          this.hideModal();
+        });
+    },
+
+    hideModal() {
+      this.dialog = false;
+    },
+
+    clearForm() {
+      this.$v.$reset();
+      this.form.amount = null;
+      this.form.date = new Date().toISOString().substr(0, 10);
+      this.form.description = '';
+      this.form.categoryId = '';
+    },
   },
 };
 </script>
@@ -167,6 +234,11 @@ export default {
 
   .transaction-icons.right {
     margin-left: 40px;
+  }
+
+  .error--line {
+    width: 100%;
+    border-color: #ff5252;
   }
 
 </style>
