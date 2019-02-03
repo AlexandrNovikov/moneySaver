@@ -1,52 +1,51 @@
 <template>
   <div>
     <form novalidate class="md-layout" @submit.prevent="validateCategory">
-    <md-toolbar class="md-toolbar md-primary" md-elevation="4">
-      <div class="md-toolbar-section-start">
-        <md-button @click="hideDrawer" class="md-icon-button">
-          <md-icon>arrow_back</md-icon>
-        </md-button>
-      </div>
-      <span class="md-title">{{isIncome ? 'Income' : 'Spending'}}</span>
-      <div class="md-toolbar-section-end">
-        <md-button v-if="currentName" @click="deleteCategory" class="md-icon-button">
-          <md-icon>delete</md-icon>
-        </md-button>
-        <md-button v-if="isEdited" type="submit" class="md-icon-button">
-          <md-icon>done</md-icon>
-        </md-button>
-      </div>
-    </md-toolbar>
+      <md-toolbar class="md-toolbar md-primary" md-elevation="4">
+        <div class="md-toolbar-section-start">
+          <md-button @click="hideDrawer" class="md-icon-button">
+            <md-icon>arrow_back</md-icon>
+          </md-button>
+        </div>
+        <span class="md-title">{{isIncome ? 'Income' : 'Spending'}}</span>
+        <div class="md-toolbar-section-end">
+          <md-button v-if="currentName" @click="deleteCategory" class="md-icon-button">
+            <md-icon>delete</md-icon>
+          </md-button>
+          <md-button v-if="isEdited" type="submit" class="md-icon-button">
+            <md-icon>done</md-icon>
+          </md-button>
+        </div>
+      </md-toolbar>
       <v-progress-linear v-if="sending"
-        :indeterminate="true"
-         background-color="blue lighten-3"
-         color="blue"
-         value="15">
+                         :indeterminate="true"
+                         background-color="blue lighten-3"
+                         color="blue"
+                         value="15">
       </v-progress-linear>
 
       <md-card>
+        <md-card-content>
+          <md-field :class="getValidationClass('description')">
+            <md-icon v-if="form.name">{{form.name}}</md-icon>
+            <label>Name</label>
+            <md-input v-model="form.description"></md-input>
 
-      <md-card-content>
-        <md-field :class="getValidationClass('description')">
-          <md-icon v-if="form.name">{{form.name}}</md-icon>
-          <label>Name</label>
-          <md-input v-model="form.description"></md-input>
-
-        </md-field>
-        <md-divider></md-divider>
-        <div class="icons" :class="getValidationClass('name')">
-          <md-button v-for="category in categories"
-                     :key="category.name"
-                     class="md-icon-button md-raised"
-                     :md-ripple="false"
-                     :class="{'md-primary':form.name === category}"
-                     @click="clickIconHandler(category)"
-          >
-            <md-icon>{{category}}</md-icon>
-          </md-button>
-        </div>
-      </md-card-content>
-    </md-card>
+          </md-field>
+          <md-divider></md-divider>
+          <div class="icons" :class="getValidationClass('name')">
+            <md-button v-for="category in categories"
+                       :key="category.name"
+                       class="md-icon-button md-raised"
+                       :md-ripple="false"
+                       :class="{'md-primary':form.name === category}"
+                       @click="clickIconHandler(category)"
+            >
+              <md-icon>{{category}}</md-icon>
+            </md-button>
+          </div>
+        </md-card-content>
+      </md-card>
     </form>
   </div>
 </template>

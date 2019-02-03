@@ -5,32 +5,19 @@
       <div>User data:</div>
       <p>Username: {{this.username}}</p>
       <p>Email: {{this.email}}</p>
-
-      <md-speed-dial class="md-bottom-right">
-        <md-speed-dial-target class="md-primary">
-          <md-icon class="add">edit</md-icon>
-        </md-speed-dial-target>
-
-        <md-speed-dial-content>
-          <md-button class="md-icon-button add">
-            <md-icon>add</md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button md-accent">
-            <md-icon>remove</md-icon>
-          </md-button>
-        </md-speed-dial-content>
-      </md-speed-dial>
+      <TransactionModal></TransactionModal>
     </div>
   </div>
 </template>
 
 <script>
+import TransactionModal from './TransactionModal';
+
 const axios = require('axios');
 
 export default {
-
   name: 'Profile',
+  components: { TransactionModal },
   data() {
     return {
       msg: 'This is Your Profile Page',
@@ -69,8 +56,5 @@ export default {
 </script>
 
 <style scoped>
-  .md-button.md-theme-default.md-raised.add:not([disabled]) {
-    background-color: #41c300;
-  }
 
 </style>
