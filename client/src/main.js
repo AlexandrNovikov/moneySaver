@@ -62,6 +62,14 @@ const store = new Vuex.Store({
       updated.name = payload.name;
       updated.description = payload.description;
     },
+    addIncomeTransaction(state, payload) {
+      let category = _.find(state.incomeCategories, n => n._id === payload.categoryId);
+      category.transactions.push(payload);
+    },
+    addSpendingTransaction(state, payload) {
+      let category = _.find(state.spendingCategories, n => n._id === payload.categoryId);
+      category.transactions.push(payload);
+    }
   },
 });
 

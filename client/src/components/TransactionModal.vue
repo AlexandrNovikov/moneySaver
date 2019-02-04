@@ -15,82 +15,82 @@
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
         <form novalidate @submit.prevent="validateTransaction">
-        <v-toolbar>
-          <v-btn icon @click="hideModal">
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-toolbar-title>New transaction</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn icon type="submit">
-            <v-icon>done</v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-menu
-                  :close-on-content-click="false"
-                  v-model="picker"
-                  :nudge-right="40"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  min-width="290px"
-                >
+          <v-toolbar>
+            <v-btn icon @click="hideModal">
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>New transaction</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon type="submit">
+              <v-icon>done</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-menu
+                    :close-on-content-click="false"
+                    v-model="picker"
+                    :nudge-right="40"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    min-width="290px"
+                  >
+                    <v-text-field
+                      slot="activator"
+                      v-model="form.date"
+                      label="Date of transaction"
+                      prepend-icon="event"
+                      readonly
+                    ></v-text-field>
+                    <v-date-picker v-model="form.date" @input="picker = false" :max="currentDate"></v-date-picker>
+                  </v-menu>
+                </v-flex>
+                <v-flex xs12>
                   <v-text-field
-                    slot="activator"
-                    v-model="form.date"
-                    label="Date of transaction"
-                    prepend-icon="event"
-                    readonly
+                    v-model="form.amount"
+                    type="number"
+                    label="Amount"
+                    prepend-icon="money"
+                    required
+                    :error-messages="amountErrors"
+                    @input="$v.form.amount.$touch()"
+                    @blur="$v.form.amount.$touch()"
                   ></v-text-field>
-                  <v-date-picker v-model="form.date" @input="picker = false" :max="currentDate"></v-date-picker>
-                </v-menu>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="form.amount"
-                  type="number"
-                  label="Amount"
-                  prepend-icon="money"
-                  required
-                  :error-messages="amountErrors"
-                  @input="$v.form.amount.$touch()"
-                  @blur="$v.form.amount.$touch()"
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="form.description"
-                  label="Description"
-                  prepend-icon="note"
-                ></v-text-field>
-              </v-flex>
-              <v-flex v-if="!form.isIncome"
-                      class="categories"
-                      v-for="i in spendingCategories" :key="i._id" sm4>
-                <v-btn :class="{'primary':form.categoryId === i._id}"
-                       @click="categoryButtonHandler(i._id)"
-                >{{i.description}}
-                  <v-icon right dark>{{i.name}}</v-icon>
-                </v-btn>
-              </v-flex>
-              <v-flex v-if="form.isIncome"
-                      class="categories"
-                      v-for="i in incomeCategories" :key="i._id" sm4>
-                <v-btn :class="{'primary':form.categoryId === i._id}"
-                       @click="categoryButtonHandler(i._id)"
-                >{{i.description}}
-                  <v-icon right dark>{{i.name}}</v-icon>
-                </v-btn>
-              </v-flex>
-              <hr v-if="isCategoryMissed" class="error--line">
-              <span v-if="isCategoryMissed" class="error--text">Please choose a category</span>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="form.description"
+                    label="Description"
+                    prepend-icon="note"
+                  ></v-text-field>
+                </v-flex>
+                <hr v-if="isCategoryMissed" class="error--line">
+                <span v-if="isCategoryMissed" class="error--text">Please choose a category</span>
+                <v-flex v-if="!form.isIncome"
+                        class="categories"
+                        v-for="i in spendingCategories" :key="i._id" sm4>
+                  <v-btn :class="{'primary':form.categoryId === i._id}"
+                         @click="categoryButtonHandler(i._id)"
+                  >{{i.description}}
+                    <v-icon right dark>{{i.name}}</v-icon>
+                  </v-btn>
+                </v-flex>
+                <v-flex v-if="form.isIncome"
+                        class="categories"
+                        v-for="i in incomeCategories" :key="i._id" sm4>
+                  <v-btn :class="{'primary':form.categoryId === i._id}"
+                         @click="categoryButtonHandler(i._id)"
+                  >{{i.description}}
+                    <v-icon right dark>{{i.name}}</v-icon>
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
         </form>
       </v-card>
     </v-dialog>
@@ -187,8 +187,12 @@ export default {
           if (res.data.errors) {
             this.$noty.error(res.data.errors[0].message);
           } else {
-            console.log(res.data.data);
-            // this.$store.commit('addCategory', res.data.data.addCategory); // TODO store result to Vuex here
+            let result = res.data.data.addTransaction;
+            result.categoryId = this.form.categoryId;
+
+            this.isIncome ? this.$store.commit('addIncomeTransaction', result) :
+              this.$store.commit('addSpendingTransaction', result);
+
             this.hideModal();
           }
         }).catch((e) => { this.$noty.error(`${e.message}. Please reload page and try again`); })
@@ -225,7 +229,7 @@ export default {
   }
 
   .categories {
-    width: 140px;
+    width: 135px;
   }
 
   .transaction-icons.left {
