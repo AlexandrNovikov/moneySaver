@@ -46,7 +46,10 @@
                       prepend-icon="event"
                       readonly
                     ></v-text-field>
-                    <v-date-picker v-model="form.date" @input="picker = false" :max="currentDate"></v-date-picker>
+                    <v-date-picker v-model="form.date"
+                                   @input="picker = false"
+                                   :max="currentDate">
+                    </v-date-picker>
                   </v-menu>
                 </v-flex>
                 <v-flex xs12>
@@ -152,6 +155,9 @@ export default {
     isCategoryMissed() {
       return this.$v.form.categoryId.$invalid && this.$v.form.categoryId.$dirty;
     },
+    formattedDate() {
+      return Date.parse(this.form.date);
+    },
   },
 
   methods: {
@@ -181,16 +187,16 @@ export default {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{addTransaction(amount: ${this.form.amount}, categoryId: "${this.form.categoryId}", description: "${this.form.description}"){_id description amount createdAt}}`,
+        query: `mutation{addTransaction(input: {categoryId: "${this.form.categoryId}", amount: ${this.form.amount}, description: "${this.form.description}", createdAt: "${this.formattedDate}"}){_id amount createdAt description}}`,
       })
         .then((res) => {
           if (res.data.errors) {
             this.$noty.error(res.data.errors[0].message);
           } else {
-            let result = res.data.data.addTransaction;
+            const result = res.data.data.addTransaction;
             result.categoryId = this.form.categoryId;
 
-            this.isIncome ? this.$store.commit('addIncomeTransaction', result) :
+            this.form.isIncome ? this.$store.commit('addIncomeTransaction', result) :
               this.$store.commit('addSpendingTransaction', result);
 
             this.hideModal();

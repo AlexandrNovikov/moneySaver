@@ -103,17 +103,19 @@ const resolvers = {
   },
 
   addTransaction: async (args, user) => {
+    let { categoryId, amount, description, createdAt } = args.input;
+
     if (!user.user) {
       throw new Error(errorName.NOT_AUTHORIZED);
     }
 
-    category = await Category.findOne({ _id: args.categoryId, _userId: user.user.id });
+    category = await Category.findOne({ _id: categoryId, _userId: user.user.id });
 
     if (!category) {
       throw new Error(errorName.BAD_REQUEST);
     }
 
-    const index = category.transactions.push({amount: args.amount, description: args.description || ''});
+    const index = category.transactions.push({ amount, description, createdAt });
 
     try {
       const test = await category.save();
@@ -142,7 +144,7 @@ const resolvers = {
   },
 
   updateTransaction: async (args, user) => {
-    let {_id, amount, description, createdAt} = args.input;
+    let { _id, amount, description, createdAt } = args.input;
 
     if (!user.user) {
       throw new Error(errorName.NOT_AUTHORIZED);

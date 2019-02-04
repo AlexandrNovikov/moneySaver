@@ -13,7 +13,7 @@
           </v-btn>
           <span>{{y.amount}}</span>
           <span>{{y.description}}</span>
-          <span>{{y.createdAt}}</span>
+          <span>{{formatDate(y.createdAt)}}</span>
         </div>
       </div>
       <span>Spendins</span>
@@ -24,7 +24,7 @@
         <div v-for="y in i.transactions" :key="y._id">
           <span>{{y.amount}}</span>
           <span>{{y.description}}</span>
-          <span>{{y.createdAt}}</span>
+          <span>{{formatDate(y.createdAt)}}</span>
         </div>
       </div>
       <TransactionModal></TransactionModal>
@@ -36,6 +36,7 @@
 import TransactionModal from './TransactionModal';
 
 const axios = require('axios');
+const moment = require('moment');
 
 export default {
   name: 'Profile',
@@ -87,6 +88,10 @@ export default {
         .then((res) => {
           this.$store.commit('setCategories', res.data.data.categories);
         });
+    },
+
+    formatDate(timestamp) {
+      return moment(parseInt(timestamp, 10)).format('DD/MM/YYYY');
     },
   },
 };

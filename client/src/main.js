@@ -6,6 +6,7 @@ import VueCookie from 'vue-cookie';
 import VueNoty from 'vuejs-noty';
 import axios from 'axios';
 import _ from 'lodash';
+import moment from 'moment';
 
 import 'vue-material/dist/vue-material.min.css';
 import 'vuetify/dist/vuetify.min.css';
@@ -25,6 +26,7 @@ Vue.use(Vuex);
 Vue.use(VueMaterial);
 Vue.use(Vuetify);
 Vue.use(VueCookie);
+Vue.use(moment);
 Object.defineProperty(Vue.prototype, '$_', { value: _ });
 
 const store = new Vuex.Store({
@@ -63,13 +65,13 @@ const store = new Vuex.Store({
       updated.description = payload.description;
     },
     addIncomeTransaction(state, payload) {
-      let category = _.find(state.incomeCategories, n => n._id === payload.categoryId);
+      const category = _.find(state.incomeCategories, n => n._id === payload.categoryId);
       category.transactions.push(payload);
     },
     addSpendingTransaction(state, payload) {
-      let category = _.find(state.spendingCategories, n => n._id === payload.categoryId);
+      const category = _.find(state.spendingCategories, n => n._id === payload.categoryId);
       category.transactions.push(payload);
-    }
+    },
   },
 });
 

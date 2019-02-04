@@ -14,10 +14,17 @@ const typeDefs = `
     type Transaction {
       _id: ID!
       amount: Float!
+      createdAt: String!
       description: String
-      createdAt: String
     }
     
+    input addTransactionInput {
+      categoryId: ID!
+      amount: Float!
+      description: String
+      createdAt: String!
+    }
+  
     input updateTransactionInput {
       _id: ID!
       amount: Float
@@ -34,7 +41,7 @@ const typeDefs = `
       addCategory(name: String!, description: String!, isIncome: Boolean!): Category!
       removeCategory(_id: ID!): Category!
       updateCategory(_id: ID!, name: String, description: String): Category!
-      addTransaction(categoryId: ID!, amount: Float!, description: String): Transaction!
+      addTransaction(input: addTransactionInput!): Transaction!
       removeTransaction(_id: ID!): Transaction!
       updateTransaction(input: updateTransactionInput!): Transaction!
     }

@@ -4,7 +4,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const transactionSchema = new mongoose.Schema({
   amount: Number,
   description: String,
-  createdAt: { type: Date, default: Date.now },
+  createdAt: String,
 });
 
 const categorySchema = new mongoose.Schema({

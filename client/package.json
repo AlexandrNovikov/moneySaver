@@ -23,7 +23,8 @@
     "vuetify": "^1.4.2",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
