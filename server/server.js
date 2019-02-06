@@ -7,7 +7,6 @@ const graphqlHTTP = require('express-graphql');
 const schema = require('./schema/index');
 const resolvers = require('./resolvers');
 const jwt = require('express-jwt');
-const axios = require('axios');
 const { dbURL, secret } = require('./config');
 const { errorType } = require('./services/constants');
 
@@ -30,15 +29,6 @@ const getErrorCode = errorName => {
 
 app.use(authMiddleware);
 
-// app.use('/api', graphqlHTTP(req => ({
-//   schema,
-//   rootValue: resolvers,
-//   graphiql: true,
-//   context: {
-//     user: req.user
-//   }
-// })));
-
 app.use('/api', (req, res) => {
   graphqlHTTP({
     schema,
@@ -55,20 +45,6 @@ app.use('/api', (req, res) => {
       return ({ message: err.message })
     }
   })(req, res)
-});
-
-app.get(`/api/users`, (req, res, next) => {
-    return axios.get(`https://jsonplaceholder.typicode.com/users`)
-      .then((response) => {
-        res.json(response.data);
-      });
-});
-
-app.get(`/api/users/:id`, (req, res, next) => {
-  return axios.get(`https://jsonplaceholder.typicode.com/users/${req.params.id}`)
-    .then((response) => {
-      res.json(response.data);
-    });
 });
 
 mongoose.connect(dbURL);

@@ -1,4 +1,3 @@
-const Book = require('./models/Book');
 const User = require('./models/User');
 const Category = require('./models/Category');
 const bcrypt = require('bcryptjs');
@@ -14,33 +13,6 @@ ObjectId.prototype.valueOf = function () {
 };
 
 const resolvers = {
-
-  books: async (_, args) => {
-    if (!args.user) {
-      throw new Error(errorName.NOT_AUTHORIZED);
-    }
-    let books = await Book.find();
-    return books;
-  },
-
-  addBook: async (args) => {
-    var newBook = new Book({
-      title: args.title,
-      author: args.author
-    });
-
-    var err = await newBook.save();
-
-    if (err) return err;
-    return newBook
-  },
-  removeBook: async (args) => {
-    var doc = await Book.findOneAndRemove({
-      title: args.title
-    });
-
-    return doc
-  },
 
   async category(args, user) {
     if (!user.user) {
