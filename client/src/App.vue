@@ -17,4 +17,8 @@ export default {
     width: 50%;
     padding: 10px;
   }
+
+  .anychart-credits {
+    display: none;
+  }
 </style>
