@@ -80,9 +80,11 @@ export default {
     spendingChartData() {
       const data = [];
       this.spendingCategoriesWithTransactions.forEach((category) => {
-        category.transactions.forEach((transaction) => {
-          data.push([category.description, transaction.amount]);
+        const transactionsArr = category.transactions.map((transaction) => {
+          return transaction.amount;
         });
+        const transactionsTotal = transactionsArr.reduce((a, b) => a + b, 0);
+        data.push([category.description, transactionsTotal]);
       });
 
       return data;
