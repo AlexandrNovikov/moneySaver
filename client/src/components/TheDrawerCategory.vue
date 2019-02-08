@@ -135,7 +135,7 @@ export default {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{addCategory(name: "${this.form.name}", description: "${this.form.description}", isIncome: ${this.isIncome}) {_id name description isIncome}}`,
+        query: `mutation{addCategory(name: "${this.form.name}", description: "${this.form.description}", isIncome: ${this.isIncome}) {_id name description isIncome transactions{_id amount description createdAt}}}`,
       })
         .then((res) => {
           if (res.data.errors) {
@@ -152,7 +152,7 @@ export default {
       this.sending = true;
 
       axios.post('/api', {
-        query: `mutation{updateCategory(_id: "${this._id}" name: "${this.form.name}", description: "${this.form.description}") {_id name description isIncome}}`,
+        query: `mutation{updateCategory(_id: "${this._id}" name: "${this.form.name}", description: "${this.form.description}") {_id name description isIncome transactions{_id amount description createdAt}}}`,
       })
         .then((res) => {
           if (res.data.errors) {

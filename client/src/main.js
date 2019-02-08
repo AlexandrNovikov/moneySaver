@@ -49,8 +49,8 @@ const store = new Vuex.Store({
       state.spendingCategories = _.filter(payload, n => !n.isIncome);
     },
     addCategory(state, payload) {
-      payload.isIncome ? state.incomeCategories.unshift(payload) :
-        state.spendingCategories.unshift(payload);
+      payload.isIncome ? state.incomeCategories.push(payload) :
+        state.spendingCategories.push(payload);
     },
     removeCategory(state, payload) {
       payload.isIncome ? _.remove(state.incomeCategories, n => n._id === payload._id) :
