@@ -19,7 +19,7 @@
             <v-btn icon @click="hideModal">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>New transaction</v-toolbar-title>
+            <v-toolbar-title>{{title}}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon type="submit">
               <v-icon>done</v-icon>
@@ -139,6 +139,9 @@ export default {
   },
 
   computed: {
+    title() {
+      return this.form.isIncome ? 'New income' : 'New spending';
+    },
     incomeCategories() {
       return this.$store.state.incomeCategories;
     },

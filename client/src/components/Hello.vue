@@ -1,10 +1,10 @@
 <template>
-  <section class="section">
+  <section>
     <TheDrawer></TheDrawer>
-    <div class="container">
+    <v-container>
       <AuthorizePage v-if="!isAuthorized"></AuthorizePage>
       <Profile v-if="isAuthorized"></Profile>
-    </div>
+    </v-container>
   </section>
 </template>
 

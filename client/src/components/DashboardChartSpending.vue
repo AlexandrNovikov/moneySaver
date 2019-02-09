@@ -12,12 +12,6 @@ export default {
   data() {
     return {
       chart: null,
-      config: {
-        chart: {
-          type: 'pie',
-          title: 'Spending',
-        },
-      },
     };
   },
 
@@ -32,7 +26,6 @@ export default {
       return {
         chart: {
           type: 'pie',
-          title: 'Spending',
           data: this.chartData,
         },
       };
