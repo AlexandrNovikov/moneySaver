@@ -63,7 +63,11 @@
                 prepend-icon="event"
                 readonly
               ></v-text-field>
-              <v-date-picker v-model="pickerStartDate" @input="pickerStart = false" :type="pickerType"></v-date-picker>
+              <v-date-picker v-model="pickerStartDate"
+                             @input="pickerStart = false"
+                             :type="pickerType">
+
+              </v-date-picker>
             </v-menu>
           </v-flex>
           <v-flex>
@@ -84,7 +88,10 @@
                 prepend-icon="event"
                 readonly
               ></v-text-field>
-              <v-date-picker v-model="pickerEndDate" @input="pickerEnd = false" :type="pickerType"></v-date-picker>
+              <v-date-picker v-model="pickerEndDate"
+                             @input="pickerEnd = false"
+                             :type="pickerType">
+              </v-date-picker>
             </v-menu>
           </v-flex>
         </v-layout>
@@ -92,7 +99,7 @@
 
     </v-layout>
     <TransactionModal></TransactionModal>
-    <TransactionForm v-if="isDetailsEnabled"></TransactionForm>
+    <TransactionsList v-if="isDetailsEnabled"></TransactionsList>
   </v-container>
 </template>
 
@@ -100,14 +107,14 @@
 import Anychart from 'anychart';
 import TransactionModal from './TransactionModal';
 import DashboardChartSpending from './DashboardChartSpending';
-import TransactionForm from "./TransactionForm";
+import TransactionsList from './TransactionsList';
 
 const axios = require('axios');
 const moment = require('moment');
 
 export default {
   name: 'Profile',
-  components: {TransactionForm, TransactionModal, DashboardChartSpending },
+  components: { TransactionsList, TransactionModal, DashboardChartSpending },
 
   data() {
     return {
@@ -145,9 +152,7 @@ export default {
     spendingChartData() {
       const data = [];
       this.spendingCategoriesWithTransactions.forEach((category) => {
-        const transactionsArr = category.transactions.map((transaction) => {
-          return transaction.amount;
-        });
+        const transactionsArr = category.transactions.map(transaction => transaction.amount);
         const transactionsTotal = transactionsArr.reduce((a, b) => a + b, 0);
         data.push([category.description, transactionsTotal]);
       });
@@ -158,8 +163,8 @@ export default {
       return this.spendingCategoriesWithTransactions.length;
     },
     pickerType() {
-      return (this.range === 'month') ? 'month': 'date'
-    }
+      return (this.range === 'month') ? 'month' : 'date';
+    },
   },
 
   methods: {
@@ -188,12 +193,11 @@ export default {
 
     weekHandler() {
       const today = moment();
-      const from_date = today.startOf('isoWeek');
-      this.pickerStartDate = from_date.toISOString().substr(0, 10);
-      const to_date = today.endOf('isoWeek');
-      this.pickerEndDate = to_date.toISOString().substr(0, 10);
-
-    }
+      const fromDate = today.startOf('isoWeek');
+      this.pickerStartDate = fromDate.toISOString().substr(0, 10);
+      const toDate = today.endOf('isoWeek');
+      this.pickerEndDate = toDate.toISOString().substr(0, 10);
+    },
   },
 };
 </script>
