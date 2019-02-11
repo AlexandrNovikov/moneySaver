@@ -5,17 +5,17 @@
         <v-layout align-space-around justify-end row fill-height>
           <v-flex>
             <v-btn-toggle v-model="range">
-              <v-btn flat value="day">
+              <v-btn flat value="day" @click="rangeHandler('day')">
                 Day
               </v-btn>
-              <v-btn flat value="week" @click="weekHandler">
+              <v-btn flat value="week" @click="rangeHandler('week')">
                 Week
               </v-btn>
-              <v-btn flat value="month">
+              <v-btn flat value="month" @click="rangeHandler('month')">
                 Month
               </v-btn>
-              <v-btn flat value="all">
-                All
+              <v-btn flat value="year" @click="rangeHandler('year')">
+                Year
               </v-btn>
             </v-btn-toggle>
           </v-flex>
@@ -65,8 +65,7 @@
               ></v-text-field>
               <v-date-picker v-model="pickerStartDate"
                              @input="pickerStart = false"
-                             :type="pickerType">
-
+                             type="date">
               </v-date-picker>
             </v-menu>
           </v-flex>
@@ -90,7 +89,7 @@
               ></v-text-field>
               <v-date-picker v-model="pickerEndDate"
                              @input="pickerEnd = false"
-                             :type="pickerType">
+                             type="date">
               </v-date-picker>
             </v-menu>
           </v-flex>
@@ -122,8 +121,8 @@ export default {
       email: null,
       pickerStart: false,
       pickerEnd: false,
-      pickerStartDate: new Date().toISOString().substr(0, 10),
-      pickerEndDate: new Date().toISOString().substr(0, 10),
+      pickerStartDate: moment().format('YYYY-MM-DD'),
+      pickerEndDate: moment().format('YYYY-MM-DD'),
       range: 'day',
       Anychart,
     };
@@ -169,9 +168,6 @@ export default {
     isDetailsEnabled() {
       return this.spendingCategoriesWithTransactions.length;
     },
-    pickerType() {
-      return (this.range === 'month') ? 'month' : 'date';
-    },
   },
 
   methods: {
@@ -198,12 +194,14 @@ export default {
       return moment(parseInt(timestamp, 10)).format('DD/MM/YYYY');
     },
 
-    weekHandler() {
-      const today = moment();
-      const fromDate = today.startOf('isoWeek');
-      this.pickerStartDate = fromDate.toISOString().substr(0, 10);
-      const toDate = today.endOf('isoWeek');
-      this.pickerEndDate = toDate.toISOString().substr(0, 10);
+    rangeHandler(range) {
+      if (range === 'day') {
+        this.pickerStartDate = moment().format('YYYY-MM-DD');
+        this.pickerEndDate = moment().format('YYYY-MM-DD');
+      } else {
+        this.pickerStartDate= moment().startOf(range).format('YYYY-MM-DD');
+        this.pickerEndDate= moment().endOf(range).format('YYYY-MM-DD');
+      }
     },
   },
 };
