@@ -40,7 +40,7 @@ export default {
     init() {
       if (!this.chart && this.options) {
         const label = anychart.standalones.label();
-        this.chartData.length ? label.text(`Total:\n ${this.total}`) : label.text('Add some spending to see them on the chart');
+        this.chartData.length ? label.text(`Total:\n ${this.total}`) : label.text('No spending for this date range');
         label.width('100%');
         label.height('100%');
         label.fontColor('#60727b');

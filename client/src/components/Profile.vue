@@ -20,7 +20,7 @@
             </v-btn-toggle>
           </v-flex>
           <v-flex class="arrow">
-            <v-btn flat icon color="red lighten-2">
+            <v-btn flat icon color="red lighten-2" @click="previousHandler">
               <v-icon>keyboard_arrow_left</v-icon>
             </v-btn>
           </v-flex>
@@ -40,7 +40,7 @@
         <v-layout align-space-around justify-start row fill-height>
 
           <v-flex class="arrow">
-            <v-btn flat icon color="red lighten-2">
+            <v-btn flat icon color="red lighten-2" @click="nextHandler">
               <v-icon>keyboard_arrow_right</v-icon>
             </v-btn>
           </v-flex>
@@ -199,9 +199,19 @@ export default {
         this.pickerStartDate = moment().format('YYYY-MM-DD');
         this.pickerEndDate = moment().format('YYYY-MM-DD');
       } else {
-        this.pickerStartDate= moment().startOf(range).format('YYYY-MM-DD');
-        this.pickerEndDate= moment().endOf(range).format('YYYY-MM-DD');
+        this.pickerStartDate = moment().startOf(range).format('YYYY-MM-DD');
+        this.pickerEndDate = moment().endOf(range).format('YYYY-MM-DD');
       }
+    },
+
+    previousHandler() {
+      this.pickerStartDate = moment(this.pickerStartDate).subtract(1, this.range).startOf(this.range).format('YYYY-MM-DD');
+      this.pickerEndDate = moment(this.pickerEndDate).subtract(1, this.range).endOf(this.range).format('YYYY-MM-DD');
+    },
+
+    nextHandler() {
+      this.pickerStartDate = moment(this.pickerStartDate).add(1, this.range).startOf(this.range).format('YYYY-MM-DD');
+      this.pickerEndDate = moment(this.pickerEndDate).add(1, this.range).endOf(this.range).format('YYYY-MM-DD');
     },
   },
 };
