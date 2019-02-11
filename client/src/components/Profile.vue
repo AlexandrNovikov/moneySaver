@@ -151,10 +151,17 @@ export default {
     },
     spendingChartData() {
       const data = [];
+      const start = moment(this.pickerStartDate).unix();
+      const end = moment(this.pickerEndDate).unix();
+
       this.spendingCategoriesWithTransactions.forEach((category) => {
-        const transactionsArr = category.transactions.map(transaction => transaction.amount);
-        const transactionsTotal = transactionsArr.reduce((a, b) => a + b, 0);
-        data.push([category.description, transactionsTotal]);
+        let transactionsArr = category.transactions.filter(transaction => parseInt(transaction.createdAt, 10) >= start &&
+          parseInt(transaction.createdAt, 10) <= end);
+        if (transactionsArr.length){
+          transactionsArr = transactionsArr.map(transaction => transaction.amount);
+          const transactionsTotal = transactionsArr.reduce((a, b) => a + b, 0);
+          data.push([category.description, transactionsTotal]);
+        }
       });
 
       return data;

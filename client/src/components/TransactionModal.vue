@@ -102,6 +102,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
+const moment = require('moment');
 import axios from 'axios';
 import { required, minValue } from 'vuelidate/lib/validators';
 
@@ -159,7 +160,7 @@ export default {
       return this.$v.form.categoryId.$invalid && this.$v.form.categoryId.$dirty;
     },
     formattedDate() {
-      return Date.parse(this.form.date);
+      return moment(this.form.date).unix();
     },
   },
 
