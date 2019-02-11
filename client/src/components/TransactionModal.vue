@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <div class="bottom">
+    <v-flex class="bottom" hidden-sm-and-down>
       <v-btn fab dark large color="cyan"
              class="transaction-icons left"
              @click="incomeButtonHandler">
@@ -11,7 +11,20 @@
              @click="spendingButtonHandler">
         <v-icon dark>remove</v-icon>
       </v-btn>
-    </div>
+    </v-flex>
+    <v-flex hidden-md-and-up>
+      <v-bottom-nav value="true" absolute color="transparent">
+        <v-btn color="teal" flat @click="incomeButtonHandler">
+          <span>Income</span>
+          <v-icon>add</v-icon>
+        </v-btn>
+
+        <v-btn color="teal" flat @click="spendingButtonHandler">
+          <span>Spending</span>
+          <v-icon>remove</v-icon>
+        </v-btn>
+      </v-bottom-nav>
+    </v-flex>
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
         <form novalidate @submit.prevent="validateTransaction">

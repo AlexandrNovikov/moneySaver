@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-xl class="">
+  <v-container grid-list-xl>
     <v-layout row justify-space-around>
       <v-flex xs4 hidden-sm-and-down>
         <v-layout align-space-around justify-end row fill-height>
@@ -27,7 +27,10 @@
         </v-layout>
       </v-flex>
 
-      <v-flex class="chart-container">
+      <v-flex class="chart-container"  v-touch="{
+      left: () => nextHandler(),
+      right: () => previousHandler(),
+    }">
         <v-flex class="spacer" hidden-sm-and-down></v-flex>
 
         <dashboard-chart-spending
