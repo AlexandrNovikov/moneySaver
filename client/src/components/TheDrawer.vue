@@ -1,9 +1,6 @@
 <template>
   <div class="page-container md-layout-column">
     <md-toolbar class="md-primary">
-        <md-button class=" md-icon-button" v-if="isAuthorized" v-on:click="leftDrawer = true">
-          <md-icon>date_range</md-icon>
-        </md-button>
       <h3 class="md-title" style="flex: 1">Budget Planner</h3>
 
       <div class="md-toolbar-section-end">
@@ -15,8 +12,6 @@
         </md-button>
       </div>
     </md-toolbar>
-
-    <md-drawer class="md-left" :md-active.sync="leftDrawer"></md-drawer>
 
     <md-drawer class="md-right" :md-active.sync="sidePanelVisible">
       <md-toolbar class="md-toolbar md-primary" md-elevation="4">
@@ -91,7 +86,6 @@ export default {
 
   data() {
     return {
-      leftDrawer: false,
       sidePanelVisible: false,
       secondPanel: false,
       categoryId: null,

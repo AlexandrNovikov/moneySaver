@@ -6,7 +6,7 @@
 import Anychart from 'anychart';
 
 export default {
-  props: ['chartData', 'Anychart'],
+  props: ['chartData', 'Anychart', 'title'],
   name: 'DashboardChartSpending',
 
   data() {
@@ -26,6 +26,7 @@ export default {
       return {
         chart: {
           type: 'pie',
+          title: this.title,
           data: this.chartData,
         },
       };

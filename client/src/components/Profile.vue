@@ -1,8 +1,8 @@
 <template>
   <v-container grid-list-xl>
-    <v-layout row justify-space-around>
-      <v-flex xs4 hidden-sm-and-down>
-        <v-layout align-space-around justify-end row fill-height>
+    <v-layout align-space-around v-bind="binding">
+      <v-flex xs4>
+        <v-layout align-space-around justify-center row fill-height>
           <v-flex>
             <v-btn-toggle v-model="range">
               <v-btn flat value="day" @click="rangeHandler('day')">
@@ -19,7 +19,14 @@
               </v-btn>
             </v-btn-toggle>
           </v-flex>
-          <v-flex class="arrow">
+          <v-flex hidden-md-and-up>
+            <v-btn-toggle v-model="range">
+            <v-btn flat value="custom" @click="">
+              Custom
+            </v-btn>
+            </v-btn-toggle>
+          </v-flex>
+          <v-flex class="arrow" hidden-sm-and-down>
             <v-btn flat icon color="red lighten-2" @click="previousHandler">
               <v-icon>keyboard_arrow_left</v-icon>
             </v-btn>
@@ -31,10 +38,11 @@
       left: () => nextHandler(),
       right: () => previousHandler(),
     }">
-        <v-flex class="spacer" hidden-sm-and-down></v-flex>
+      <v-flex class="spacer" hidden-sm-and-down></v-flex>
 
         <dashboard-chart-spending
           :chartData="spendingChartData"
+          :title="chartTitle"
           ref="pieChart">
         </dashboard-chart-spending>
       </v-flex>
@@ -171,6 +179,20 @@ export default {
     isDetailsEnabled() {
       return this.spendingCategoriesWithTransactions.length;
     },
+    binding () {
+      const binding = {};
+
+      if (this.$vuetify.breakpoint.mdAndUp) {
+        binding.row = true;
+      } else {
+        binding.column = true;
+      }
+
+      return binding
+    },
+    chartTitle(){
+      return this.$vuetify.breakpoint.smAndDown ? `${this.pickerStartDate} - ${this.pickerEndDate}` : null;
+    }
   },
 
   methods: {
