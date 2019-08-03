@@ -21,7 +21,7 @@
           </v-flex>
           <v-flex hidden-md-and-up>
             <v-btn-toggle v-model="range">
-            <v-btn flat value="custom" @click="">
+            <v-btn flat value="custom"> <!--TODO-->
               Custom
             </v-btn>
             </v-btn-toggle>
@@ -34,7 +34,7 @@
         </v-layout>
       </v-flex>
 
-      <v-flex class="chart-container"  v-touch="{
+      <v-flex class="chart-container" v-touch="{
       left: () => nextHandler(),
       right: () => previousHandler(),
     }">
@@ -43,6 +43,7 @@
         <dashboard-chart-spending
           :chartData="spendingChartData"
           :title="chartTitle"
+          :income-total="incomeTotal"
           ref="pieChart">
         </dashboard-chart-spending>
       </v-flex>
@@ -109,7 +110,7 @@
 
     </v-layout>
     <TransactionModal></TransactionModal>
-    <TransactionsList v-if="isDetailsEnabled"></TransactionsList>
+    <TransactionsList v-if="isDetailsEnabled" :total="balance"></TransactionsList>
   </v-container>
 </template>
 
@@ -165,9 +166,10 @@ export default {
       const end = moment(this.pickerEndDate).unix();
 
       this.spendingCategoriesWithTransactions.forEach((category) => {
-        let transactionsArr = category.transactions.filter(transaction => parseInt(transaction.createdAt, 10) >= start &&
+        let transactionsArr = category.transactions
+          .filter(transaction => parseInt(transaction.createdAt, 10) >= start &&
           parseInt(transaction.createdAt, 10) <= end);
-        if (transactionsArr.length){
+        if (transactionsArr.length) {
           transactionsArr = transactionsArr.map(transaction => transaction.amount);
           const transactionsTotal = transactionsArr.reduce((a, b) => a + b, 0);
           data.push([category.description, transactionsTotal]);
@@ -176,10 +178,28 @@ export default {
 
       return data;
     },
+    incomeTotal() {
+      const data = [];
+      const start = moment(this.pickerStartDate).unix();
+      const end = moment(this.pickerEndDate).unix();
+
+      this.incomeCategoriesWithTransactions.forEach((category) => {
+        let transactionsArr = category.transactions
+          .filter(transaction => parseInt(transaction.createdAt, 10) >= start &&
+            parseInt(transaction.createdAt, 10) <= end);
+        if (transactionsArr.length) {
+          transactionsArr = transactionsArr.map(transaction => transaction.amount);
+          const transactionsTotal = transactionsArr.reduce((a, b) => a + b, 0);
+          data.push(transactionsTotal);
+        }
+      });
+
+      return data.reduce((a, b) => a + b, 0);
+    },
     isDetailsEnabled() {
       return this.spendingCategoriesWithTransactions.length;
     },
-    binding () {
+    binding() {
       const binding = {};
 
       if (this.$vuetify.breakpoint.mdAndUp) {
@@ -188,11 +208,47 @@ export default {
         binding.column = true;
       }
 
-      return binding
+      return binding;
     },
-    chartTitle(){
+    chartTitle() {
       return this.$vuetify.breakpoint.smAndDown ? `${this.pickerStartDate} - ${this.pickerEndDate}` : null;
-    }
+    },
+    incomeTotalBalance() {
+      const data = [];
+      const end = moment(this.pickerEndDate).unix();
+
+      this.incomeCategoriesWithTransactions.forEach((category) => {
+        let transactionsArr = category.transactions
+          .filter(transaction => parseInt(transaction.createdAt, 10) <= end);
+        if (transactionsArr.length) {
+          transactionsArr = transactionsArr.map(transaction => transaction.amount);
+          const transactionsTotal = transactionsArr.reduce((a, b) => a + b, 0);
+          data.push(transactionsTotal);
+        }
+      });
+
+      return data.reduce((a, b) => a + b, 0);
+    },
+    spendingTotalBalance() {
+      const data = [];
+      const end = moment(this.pickerEndDate).unix();
+
+      this.spendingCategoriesWithTransactions.forEach((category) => {
+        let transactionsArr = category.transactions
+          .filter(transaction => parseInt(transaction.createdAt, 10) <= end);
+        if (transactionsArr.length) {
+          transactionsArr = transactionsArr.map(transaction => transaction.amount);
+          const transactionsTotal = transactionsArr.reduce((a, b) => a + b, 0);
+          data.push(transactionsTotal);
+        }
+      });
+
+      return data.reduce((a, b) => a + b, 0);
+    },
+
+    balance() {
+      return this.incomeTotalBalance - this.spendingTotalBalance;
+    },
   },
 
   methods: {
@@ -229,7 +285,7 @@ export default {
       }
     },
 
-    previousHandler() {
+    previousHandler() { // TODO merge two methods to one which returns object
       this.pickerStartDate = moment(this.pickerStartDate).subtract(1, this.range).startOf(this.range).format('YYYY-MM-DD');
       this.pickerEndDate = moment(this.pickerEndDate).subtract(1, this.range).endOf(this.range).format('YYYY-MM-DD');
     },

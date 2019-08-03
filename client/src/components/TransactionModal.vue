@@ -1,18 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-flex class="bottom" hidden-sm-and-down>
-      <v-btn fab dark large color="cyan"
-             class="transaction-icons left"
-             @click="incomeButtonHandler">
-        <v-icon dark>add</v-icon>
-      </v-btn>
-      <v-btn fab dark large color="cyan"
-             class="transaction-icons right"
-             @click="spendingButtonHandler">
-        <v-icon dark>remove</v-icon>
-      </v-btn>
-    </v-flex>
-    <v-flex hidden-md-and-up>
+    <v-flex>
       <v-bottom-nav value="true" absolute color="transparent">
         <v-btn color="teal" flat @click="incomeButtonHandler">
           <span>Income</span>
@@ -114,10 +102,11 @@
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate';
-const moment = require('moment');
 import axios from 'axios';
 import { required, minValue } from 'vuelidate/lib/validators';
+import { validationMixin } from 'vuelidate';
+
+const moment = require('moment');
 
 export default {
   name: 'TransactionModal',
@@ -127,7 +116,7 @@ export default {
     return {
       dialog: false,
       picker: false,
-      sending: false, //TODO use it for request progress
+      sending: false, // TODO use it for request progress
       currentDate: new Date().toISOString().substr(0, 10),
       form: {
         date: new Date().toISOString().substr(0, 10),
@@ -241,12 +230,6 @@ export default {
 </script>
 
 <style scoped>
-
-  .bottom {
-    position: fixed;
-    bottom: 30px;
-  }
-
   .categories button {
     width: 100%;
   }
@@ -255,17 +238,8 @@ export default {
     width: 135px;
   }
 
-  .transaction-icons.left {
-    margin-right: 40px;
-  }
-
-  .transaction-icons.right {
-    margin-left: 40px;
-  }
-
   .error--line {
     width: 100%;
     border-color: #ff5252;
   }
-
 </style>

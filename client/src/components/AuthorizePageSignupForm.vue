@@ -20,7 +20,7 @@
                 <span
                   class="md-error"
                   v-if="!$v.form.username.required"
-                >The Username is required</span>
+                >Username is required</span>
                 <span
                   class="md-error"
                   v-else-if="!$v.form.username.minLength"
@@ -28,7 +28,7 @@
                 <span
                   class="md-error"
                   v-else-if="!$v.form.username.maxLength"
-                >Invalid is too long</span>
+                >Username is too long</span>
               </md-field>
             </div>
           </div>

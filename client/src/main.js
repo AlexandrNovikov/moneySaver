@@ -32,11 +32,19 @@ Object.defineProperty(Vue.prototype, '$_', { value: _ });
 const store = new Vuex.Store({
   state: {
     isAuthorized: VueCookie.get('auth') || false,
-    incomeCategories: [],
+    incomeCategories: [], //TODO Think about simplifying logic of vuex. store only categories and get different of them via getters
     spendingCategories: [],
   },
   /* eslint-disable no-unused-expressions */
   /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
+  getters: { //TODO implement getters for getting all types of categories here and in component level
+    getIncomeCategoriesWithTransactions: state => {
+      return state.incomeCategories.filter(n => n.transactions.length);
+    },
+    getSpendingCategoriesWithTransactions: state => {
+      return state.spendingCategories.filter(n => n.transactions.length);
+    },
+  },
   mutations: {
     login(state, payload) {
       state.isAuthorized = payload;

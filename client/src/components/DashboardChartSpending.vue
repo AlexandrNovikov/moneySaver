@@ -6,7 +6,7 @@
 import Anychart from 'anychart';
 
 export default {
-  props: ['chartData', 'Anychart', 'title'],
+  props: ['chartData', 'Anychart', 'title', 'incomeTotal'],
   name: 'DashboardChartSpending',
 
   data() {
@@ -28,6 +28,7 @@ export default {
           type: 'pie',
           title: this.title,
           data: this.chartData,
+          incomeTotal: this.incomeTotal
         },
       };
     },
@@ -39,12 +40,11 @@ export default {
 
   methods: {
     init() {
-      if (!this.chart && this.options) {
+      if (this.options) {
         const label = anychart.standalones.label();
-        this.chartData.length ? label.text(`Total:\n ${this.total}`) : label.text('No spending for this date range');
+        label.text(`- ${this.total}\n+ ${this.incomeTotal}`);
         label.width('100%');
         label.height('100%');
-        label.fontColor('#60727b');
         label.hAlign('center');
         label.vAlign('middle');
         const _Anychart = this.Anychart || Anychart;
@@ -77,3 +77,10 @@ export default {
   },
 };
 </script>
+
+<style>
+  tspan:nth-child(2) {
+    text-shadow: 1px 1px green;
+    font-size: 15px;
+  }
+</style>
